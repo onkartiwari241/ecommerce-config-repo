@@ -1,0 +1,9 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: category-service
+
+info:
+  message: "Hello from Category Service Config"
