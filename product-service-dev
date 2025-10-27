@@ -1,0 +1,6 @@
+# Database configuration
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/product_service'
+    username: 'postgres'
+    password: 'onkar'
+    driver-class-name: 'org.postgresql.Driver'
