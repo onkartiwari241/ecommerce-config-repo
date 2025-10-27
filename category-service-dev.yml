@@ -1,0 +1,7 @@
+# Database configuration
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/category_service
+    username: root
+    password: onkar
+    driver-class-name: com.mysql.cj.jdbc.Driver
