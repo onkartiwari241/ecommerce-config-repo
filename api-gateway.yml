@@ -1,60 +1,19 @@
 spring:
   application:
-    name: 'api-gateway'
+    name: api-gateway
 
 server:
   port: 0
 
-# Eureka client configuration
+# Eureka client common setup
 eureka:
   client:
-    service-url:
-      defaultZone: 'http://localhost:8761/eureka'
     register-with-eureka: true
     fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
-# Gateway routes
-spring:
-  cloud:
-    gateway:
-      routes:
-        - id: 'user-service'
-          uri: 'lb://USER-SERVICE'
-          predicates:
-            - Path=/api/v1/users/**
-        - id: 'product-service'
-          uri: 'lb://PRODUCT-SERVICE'
-          predicates:
-            - Path=/api/v1/products/**
-        - id: 'order-service'
-          uri: 'lb://ORDER-SERVICE'
-          predicates:
-            - Path=/api/v1/orders/**
-        - id: 'notification-service'
-          uri: 'lb://NOTIFICATION-SERVICE'
-          predicates:
-            - Path=/api/v1/notifications/**
-        - id: 'inventory-service'
-          uri: 'lb://INVENTORY-SERVICE'
-          predicates:
-            - Path=/api/v1/inventory/**
-        - id: 'category-service'
-          uri: 'lb://CATEGORY-SERVICE'
-          predicates:
-            - Path=/api/v1/categories/**
-        - id: 'address-service'
-          uri: 'lb://ADDRESS-SERVICE'
-          predicates:
-            - Path=/api/v1/addresses/**
-
-      # Global CORS configuration
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: '*'
-            allowedMethods: 'GET,POST,PUT,DELETE'
-
-# Distributed tracing and Zipkin
+# Distributed tracing and Zipkin (common for all)
 management:
   tracing:
     enabled: true
@@ -62,17 +21,15 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: 'http://localhost:9411/api/v2/spans'
-
-  # Expose all actuator endpoints
+      endpoint: http://localhost:9411/api/v2/spans
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: "*"
   endpoint:
     health:
       show-details: always
 
 logging:
   pattern:
-    level: '%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]'
+    level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
