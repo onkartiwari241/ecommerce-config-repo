@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: notification-service
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -41,13 +38,3 @@ management:
 logging:
   pattern:
     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
-
-# Twilio configuration (secured using environment variables)
-twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID}
-  auth-token: ${TWILIO_AUTH_TOKEN}
-  phone-number: ${TWILIO_PHONE_NUMBER}
-  whatsapp:
-    account-sid: ${TWILIO_WHATSAPP_SID}
-    auth-token: ${TWILIO_WHATSAPP_AUTH}
-    phone-number: ${TWILIO_WHATSAPP_PHONE}
