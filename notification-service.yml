@@ -1,17 +1,6 @@
 spring:
   application:
     name: 'notification-service'
-
-server:
-  port: 0
-
-# Database configuration
-  datasource:
-    url: 'jdbc:mysql://localhost:3306/notification_service'
-    username: 'root'
-    password: 'onkar'
-    driver-class-name: 'com.mysql.cj.jdbc.Driver'
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,6 +8,9 @@ server:
     properties:
       hibernate:
         dialect: 'org.hibernate.dialect.MySQL8Dialect'
+
+server:
+  port: 0
 
 # Eureka configuration
 eureka:
