@@ -21,7 +21,7 @@ spring:
       key-prefix: 'orderService:'
 
 server:
-  port: 0
+  port: 8083
 
 # Eureka configuration
 eureka:
