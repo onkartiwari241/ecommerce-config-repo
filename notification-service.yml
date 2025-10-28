@@ -8,7 +8,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
 server:
-  port: 0
+  port: 8087
 
 # Eureka configuration
 eureka:
