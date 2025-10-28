@@ -3,7 +3,7 @@ spring:
     name: api-gateway
 
 server:
-  port: 0
+  port: 8085
 
 # Eureka client common setup
 eureka:
