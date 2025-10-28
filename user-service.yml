@@ -64,9 +64,41 @@ resilience4j:
           - com.jmd.user.user.service.exception.ResourceNotFoundException
           - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
 
+      ADDRESS-SERVICE:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+        ignoreExceptions:
+          - com.jmd.user.user.service.exception.ResourceNotFoundException
+          - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
+
+
   retry:
     instances:
       USER-SERVICE:
+        maxAttempts: 3
+        waitDuration: 2s
+        retryExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+        ignoreExceptions:
+          - com.jmd.user.user.service.exception.ResourceNotFoundException
+          - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
+
+      ADDRESS-SERVICE:
         maxAttempts: 3
         waitDuration: 2s
         retryExceptions:
@@ -83,3 +115,9 @@ resilience4j:
         limitForPeriod: 5
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
+
+      ADDRESS-SERVICE:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
