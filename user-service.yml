@@ -80,7 +80,7 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
-          - com.jmd.user.user.service.exception.AddressUnavailableException
+          - com.jmd.user.user.service.exception.AddressServiceUnavailableException
         ignoreExceptions:
           - com.jmd.user.user.service.exception.ResourceNotFoundException
           - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
@@ -106,7 +106,7 @@ resilience4j:
           - java.io.IOException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
-          - com.jmd.user.user.service.exception.AddressUnavailableException
+          - com.jmd.user.user.service.exception.AddressServiceUnavailableException
         ignoreExceptions:
           - com.jmd.user.user.service.exception.ResourceNotFoundException
           - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
