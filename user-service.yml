@@ -36,3 +36,50 @@ management:
   endpoint:
     health:
       show-details: always
+
+
+# --- Resilience4J Configuration for Circuit Breaker, Retry, and Rate Limiter ---
+# Handles fault tolerance by automatically breaking the circuit on repeated failures,
+# retrying transient errors, and limiting excessive calls to prevent overload.
+resilience4j:
+  circuitbreaker:
+    instances:
+      USER-SERVICE:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        recordExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+        ignoreExceptions:
+          - com.jmd.user.user.service.exception.ResourceNotFoundException
+          - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
+
+  retry:
+    instances:
+      USER-SERVICE:
+        maxAttempts: 3
+        waitDuration: 2s
+        retryExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+        ignoreExceptions:
+          - com.jmd.user.user.service.exception.ResourceNotFoundException
+          - com.jmd.user.user.service.exception.ResourceAlreadyExistsException
+
+  ratelimiter:
+    instances:
+      USER-SERVICE:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
