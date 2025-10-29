@@ -44,3 +44,63 @@ management:
 logging:
   pattern:
     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+
+
+# --- Resilience4J Configuration for PRODUCT-SERVICE ---
+resilience4j:
+  circuitbreaker:
+    instances:
+      PRODUCT-SERVICE:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+        # ✅ Circuit breaker should open only for infra-level issues
+        recordExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+
+        # ✅ Ignore business-level and globally handled exceptions
+        ignoreExceptions:
+          - com.jmd.category.exception.DatabaseException
+          - com.jmd.category.exception.ServiceException
+          - com.jmd.category.exception.ResourceNotFoundException
+          - com.jmd.category.exception.ValidateException
+
+
+  retry:
+    instances:
+      PRODUCT-SERVICE:
+        maxAttempts: 3
+        waitDuration: 2s
+
+        # ✅ Retry only for transient, recoverable errors
+        retryExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+
+        # ✅ Never retry for business/handled exceptions
+        ignoreExceptions:
+          - com.jmd.category.exception.DatabaseException
+          - com.jmd.category.exception.ServiceException
+          - com.jmd.category.exception.ResourceNotFoundException
+          - com.jmd.category.exception.ValidateException
+
+
+  ratelimiter:
+    instances:
+      PRODUCT-SERVICE:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
