@@ -38,3 +38,62 @@ management:
   endpoint:
     health:
       show-details: always
+
+
+# --- Resilience4J Configuration for INVENTORY-SERVICE ---
+resilience4j:
+  circuitbreaker:
+    instances:
+      INVENTORY-SERVICE:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+        # ✅ Circuit breaker should open only for infra-level issues
+        recordExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+
+        # ✅ Ignore business-level and globally handled exceptions
+        ignoreExceptions:
+          - com.jmd.product.exception.DatabaseException
+          - com.jmd.product.exception.ServiceException
+          - com.jmd.product.exception.ResourceNotFoundException
+          - com.jmd.product.exception.ValidateException
+
+
+  retry:
+    instances:
+      INVENTORY-SERVICE:
+        maxAttempts: 3
+        waitDuration: 2s
+
+        # ✅ Retry only for transient, recoverable errors
+        retryExceptions:
+          - java.io.IOException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+
+        # ✅ Never retry for business/handled exceptions
+        ignoreExceptions:
+          - com.jmd.product.exception.DatabaseException
+          - com.jmd.product.exception.ServiceException
+          - com.jmd.product.exception.ResourceNotFoundException
+          - com.jmd.product.exception.ValidateException
+
+
+  ratelimiter:
+    instances:
+      INVENTORY-SERVICE:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
