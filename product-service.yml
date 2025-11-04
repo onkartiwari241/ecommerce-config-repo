@@ -45,6 +45,10 @@ management:
       show-details: always
 
 feign:
+  httpclient:
+    enabled: true
+  okhttp:
+    enabled: false
   circuitbreaker:
     enabled: true
   client:
