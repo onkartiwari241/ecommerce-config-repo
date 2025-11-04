@@ -115,3 +115,11 @@ resilience4j:
         limitForPeriod: 5
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
+
+
+logging:
+  level:
+    com.jmd.product.feignclient.InventoryServiceClient: DEBUG
+    feign.Logger: DEBUG
+    org.springframework.cloud.openfeign: DEBUG
+
