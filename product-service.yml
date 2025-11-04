@@ -52,7 +52,7 @@ feign:
       default:
         connectTimeout: 5000
         readTimeout: 5000
-        errorDecoder: feign.codec.ErrorDecoder
+        errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
 
 # --- Resilience4J Configuration for INVENTORY-SERVICE ---
 resilience4j:
