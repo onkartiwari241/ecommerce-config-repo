@@ -1,31 +1,34 @@
 spring:
   application:
-    name: 'product-service'
+    name: product-service
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
-        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
-        
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
   cloud:
     openfeign:
       discovery:
         enabled: true
+      circuitbreaker:
+        enabled: true   # ✅ Enable Feign + Resilience4J integration
 
 server:
   port: 8081
 
-# Eureka configuration
+# Eureka Configuration
 eureka:
   client:
     service-url:
-      defaultZone: 'http://localhost:8761/eureka'
+      defaultZone: http://localhost:8761/eureka
     register-with-eureka: true
     fetch-registry: true
 
-# Distributed tracing and Zipkin
+# Distributed Tracing + Zipkin
 management:
   tracing:
     enabled: true
@@ -33,9 +36,9 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: 'http://localhost:9411/api/v2/spans'
+      endpoint: http://localhost:9411/api/v2/spans
 
-  # Expose all actuator endpoints
+  # Expose actuator endpoints
   endpoints:
     web:
       exposure:
@@ -44,18 +47,17 @@ management:
     health:
       show-details: always
 
+# --- Feign Client Configuration ---
 feign:
   httpclient:
-    enabled: true
+    enabled: true      # ✅ Apache HTTP client enabled (production recommended)
   okhttp:
     enabled: false
-  circuitbreaker:
-    enabled: true
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 5000          # ⏱️ 5 sec connection timeout
+        readTimeout: 5000             # ⏱️ 5 sec read timeout
         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
 
 # --- Resilience4J Configuration for INVENTORY-SERVICE ---
@@ -74,20 +76,20 @@ resilience4j:
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
-        # ✅ Circuit breaker should open only for infra-level issues
+        # ✅ Circuit breaker opens only for infra/network issues
         recordExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
+          - feign.RetryableException
           - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
 
-        # ✅ Ignore business-level and globally handled exceptions
+        # ✅ Ignore business-level handled exceptions
         ignoreExceptions:
           - com.jmd.product.exception.DatabaseException
           - com.jmd.product.exception.ServiceException
           - com.jmd.product.exception.ResourceNotFoundException
           - com.jmd.product.exception.ValidateException
-
 
   retry:
     instances:
@@ -95,19 +97,17 @@ resilience4j:
         maxAttempts: 3
         waitDuration: 2s
 
-        # ✅ Retry only for transient, recoverable errors
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
+          - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
 
-        # ✅ Never retry for business/handled exceptions
         ignoreExceptions:
           - com.jmd.product.exception.DatabaseException
           - com.jmd.product.exception.ServiceException
           - com.jmd.product.exception.ResourceNotFoundException
           - com.jmd.product.exception.ValidateException
-
 
   ratelimiter:
     instances:
