@@ -18,7 +18,7 @@ spring:
     redis:
       time-to-live: 600000        # 10 minutes
       cache-null-values: false
-      key-prefix: user-service:
+      key-prefix: "userService:"
 
 server:
   port: 8080
