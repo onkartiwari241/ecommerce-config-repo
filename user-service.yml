@@ -51,9 +51,9 @@ management:
 # ✅ ✅ --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
 logging:
   level:
-    root: TRACE
-    org.springframework: TRACE
-    org.springframework.web: TRACE
+    # root: TRACE
+    # org.springframework: TRACE
+    # org.springframework.web: TRACE
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
     com.jmd.user: TRACE   # your package fully enabled
