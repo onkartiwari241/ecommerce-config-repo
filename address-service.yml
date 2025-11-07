@@ -1,18 +1,26 @@
 spring:
   application:
     name: address-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/addressdb
+    username: postgres
+    password: your_password_here
+    driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
     properties:
       hibernate:
+        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 server:
   port: 8084
 
-# Eureka configuration
+# ----------------- Eureka Configuration -----------------
 eureka:
   client:
     service-url:
@@ -21,8 +29,9 @@ eureka:
     fetch-registry: true
   instance:
     prefer-ip-address: true
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 
-# Distributed tracing and Zipkin
+# ----------------- Distributed Tracing (Zipkin + Micrometer) -----------------
 management:
   tracing:
     enabled: true
@@ -31,8 +40,6 @@ management:
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
-
-  # Expose all actuator endpoints
   endpoints:
     web:
       exposure:
@@ -41,6 +48,26 @@ management:
     health:
       show-details: always
 
+# ----------------- Logging Configuration -----------------
 logging:
+  level:
+    root: TRACE                     # Enables all levels globally
+    com.jmd.address: DEBUG          # Detailed logs for your package
+    org.springframework.web: INFO   # Web requests and responses
+    org.hibernate.SQL: DEBUG        # Show SQL queries
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE # Show query bindings (values)
+    org.springframework.cloud.openfeign: DEBUG  # Feign client request/response logs
+    io.github.resilience4j: DEBUG   # Resilience4j circuit breaker logs
+
   pattern:
     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+
+# ----------------- Actuator & Health Endpoints -----------------
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: '*'
