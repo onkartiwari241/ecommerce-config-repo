@@ -1,8 +1,7 @@
 spring:
   datasource:
-    
-    url: jdbc:mysql://localhost:3306/user_service
-    #url: jdbc:mysql://mysql-container:3306/user_service
+    #url: jdbc:mysql://localhost:3306/user_service
+    url: jdbc:mysql://mysql-container:3306/user_service
     username: root
     password: onkar
     driver-class-name: com.mysql.cj.jdbc.Driver
