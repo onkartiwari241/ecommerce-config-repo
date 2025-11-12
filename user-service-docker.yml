@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:mysql://mysql-container:3306/user_service
+    username: root
+    password: onkar
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  redis:
+    host: redis
+    port: 6379
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka/
+    register-with-eureka: true
+    fetch-registry: true
+
+zipkin:
+  tracing:
+    endpoint: http://zipkin:9411/api/v2/spans
+
+logging:
+  level:
+    org.springframework.cloud: INFO
