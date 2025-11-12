@@ -164,7 +164,8 @@ spring:
 
   # -----  Redis configuration  ----
   redis:
-    host: redis
+    host: redis-cache
+    #host: redis
     #host: localhost
     port: 6379
   cache:
