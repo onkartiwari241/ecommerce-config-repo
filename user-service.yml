@@ -1,7 +1,6 @@
 spring:
   application:
     name: user-service
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -10,10 +9,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-  # ----- Redis configuration -----
+  # -----  Redis configuration  ----
   redis:
-    host: redis          # Docker service name
-    port: 6379
+    #host: localhost
+    #port: 6379
+  host: redis
+  port: 6379
   cache:
     type: redis
     redis:
@@ -28,32 +29,40 @@ server:
 eureka:
   client:
     service-url:
+      #defaultZone: http://localhost:8761/eureka
       defaultZone: http://service-registry:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
 
 # --- Distributed tracing, Zipkin, and Actuator ---
 management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+     # endpoint: http://localhost:9411/api/v2/spans
+     endpoint: http://zipkin:9411/api/v2/spans
+     
   endpoints:
     web:
       exposure:
         include: '*'
+  endpoint:
     health:
       show-details: always
 
-spring:
-  zipkin:
-    base-url: http://zipkin:9411
-  sleuth:
-    sampler:
-      probability: 1.0
-
-# --- Logging with TraceId + SpanId ---
+# ✅ ✅ --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
 logging:
   level:
+    # root: TRACE
+    # org.springframework: TRACE
+    # org.springframework.web: TRACE
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.jmd.user: TRACE
+    com.jmd.user: TRACE   # your package fully enabled
+
   pattern:
     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
 
