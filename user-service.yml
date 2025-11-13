@@ -164,10 +164,12 @@ spring:
 
   # -----  Redis configuration  ----
   redis:
-    host: redis-cache
+    #host: redis-cache
     #host: redis
     #host: localhost
-    port: 6379
+    #port: 6379
+    host: ${SPRING_REDIS_HOST:redis-cache}
+    port: ${SPRING_REDIS_PORT:6379}
     timeout: 5000ms  # 5 seconds
   cache:
     type: redis
