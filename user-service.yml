@@ -197,6 +197,14 @@ management:
     tracing:
       #endpoint: http://localhost:9411/api/v2/spans
       endpoint: http://zipkin:9411/api/v2/spans
+    sender:
+      type: web
+      connect-timeout: 5000    # 5 seconds to connect
+      read-timeout: 15000      # 15 seconds to wait for response
+    sender-retry:
+      max-attempts: 3
+      backoff:
+        delay: 2000 
      
   endpoints:
     web:
