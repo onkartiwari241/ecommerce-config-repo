@@ -10,19 +10,10 @@ spring:
       hibernate:
         dialect: 'org.hibernate.dialect.MySQL8Dialect'
 
-  # redis:
-  #   host: 'localhost'
-  #   port: 6379
-
-  # -----  Redis configuration  ----
+# -----  Redis configuration  ----
   redis:
-    #host: redis-cache
-    #host: redis
-    #host: localhost
-    #port: 6379
-    host: ${SPRING_REDIS_HOST:redis-cache}
-    port: ${SPRING_REDIS_PORT:6379}
-    timeout: 5000ms  # 5 seconds  
+    host: 'localhost'
+    port: 6379  
   cache:
     type: redis
     redis:
@@ -37,8 +28,7 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: 'http://service-registry:8761/eureka/'
-      # defaultZone: 'http://localhost:8761/eureka'
+      defaultZone: 'http://localhost:8761/eureka'
     register-with-eureka: true
     fetch-registry: true
 
@@ -74,8 +64,7 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: 'http://zipkin:9411/api/v2/spans'
-      # endpoint: 'http://localhost:9411/api/v2/spans'
+      endpoint: 'http://localhost:9411/api/v2/spans'
 
   # Expose all actuator endpoints
   endpoints:
