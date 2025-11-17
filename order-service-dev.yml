@@ -1,11 +1,7 @@
 # Database configuration
 spring:
-  redis:
-    host: "redis-cache"
-    port: 6379
   datasource:
-    url: jdbc:mysql://mysql-db:3306/user_service?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
-    # url: 'jdbc:mysql://localhost:3306/order_service'
+    url: 'jdbc:mysql://localhost:3306/order_service'
     username: 'root'
     password: 'onkar'
     driver-class-name: 'com.mysql.cj.jdbc.Driver'
