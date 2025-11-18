@@ -1,1 +1,92 @@
+spring:
+  application:
+    name: media-service
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
 
+server:
+  port: 8090
+
+# --- Eureka configuration ---
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+# --- Distributed tracing, Zipkin, and Actuator ---
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+
+# ✅ ✅ --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    com.jmd.user: TRACE
+
+  pattern:
+    level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+
+# --- Resilience4J Configuration ---
+resilience4j:
+  circuitbreaker:
+    instances:
+      MEDIA-SERVICE:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        # recordExceptions:
+        #   - java.io.IOException
+        #   - java.net.SocketTimeoutException
+        #   - org.springframework.web.client.HttpServerErrorException
+        #   - org.springframework.web.client.ResourceAccessException
+        # ignoreExceptions:
+        #   - com.jmd.user.exception.ResourceNotFoundException
+        #   - com.jmd.user.exception.ResourceAlreadyExistsException
+
+  retry:
+    instances:
+      MEDIA-SERVICE:
+        maxAttempts: 3
+        waitDuration: 2s
+        # retryExceptions:
+        #   - java.io.IOException
+        #   - java.net.SocketTimeoutException
+        #   - org.springframework.web.client.ResourceAccessException
+        # ignoreExceptions:
+        #   - com.jmd.user.exception.ResourceNotFoundException
+        #   - com.jmd.user.exception.ResourceAlreadyExistsException
+
+  ratelimiter:
+    instances:
+      MEDIA-SERVICE:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
