@@ -15,7 +15,7 @@ spring:
       discovery:
         enabled: true
       circuitbreaker:
-        enabled: true   # ✅ Enable Feign + Resilience4J integration
+        enabled: true
 
 server:
   port: 8081
@@ -28,38 +28,35 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
-# Distributed Tracing + Zipkin
+# Distributed Tracing + Zipkin + Actuator
 management:
   tracing:
     enabled: true
     sampling:
       probability: 1.0
+
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
 
-  # Expose actuator endpoints
   endpoints:
     web:
       exposure:
         include: '*'
+
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
 
-# --- Feign Client Configuration ---
-# feign:
-#   httpclient:
-#     enabled: true      # ✅ Apache HTTP client enabled (production recommended)
-#   okhttp:
-#     enabled: false
-#   client:
-#     config:
-#       default:
-#         connectTimeout: 5000          # ⏱️ 5 sec connection timeout
-#         readTimeout: 20000             # ⏱️ 5 sec read timeout
-#         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
+  health:
+    circuitbreakers:
+      enabled: true
 
+# Feign Configuration
 feign:
   httpclient:
     enabled: true
@@ -72,7 +69,7 @@ feign:
         readTimeout: 20000
         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
 
-# --- Resilience4J Configuration for INVENTORY-SERVICE ---
+# Resilience4J Configuration
 resilience4j:
   circuitbreaker:
     instances:
@@ -88,7 +85,6 @@ resilience4j:
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
-        # ✅ Circuit breaker opens only for infra/network issues
         recordExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
@@ -96,7 +92,6 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
 
-        # ✅ Ignore business-level handled exceptions
         ignoreExceptions:
           - com.jmd.product.exception.DatabaseException
           - com.jmd.product.exception.ServiceException
@@ -128,18 +123,8 @@ resilience4j:
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
 
-
 logging:
   level:
     com.jmd.product.feignclient.InventoryServiceClient: DEBUG
     feign.Logger: DEBUG
     org.springframework.cloud.openfeign: DEBUG
-
-# feign:
-#   client:
-#     config:
-#       INVENTORY-SERVICE:
-#         connectTimeout: 5000
-#         readTimeout: 20000 
-
-
