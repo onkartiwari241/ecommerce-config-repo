@@ -57,7 +57,7 @@ feign:
     config:
       default:
         connectTimeout: 5000          # ⏱️ 5 sec connection timeout
-        readTimeout: 5000             # ⏱️ 5 sec read timeout
+        readTimeout: 20000             # ⏱️ 5 sec read timeout
         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
 
 # --- Resilience4J Configuration for INVENTORY-SERVICE ---
@@ -123,12 +123,11 @@ logging:
     feign.Logger: DEBUG
     org.springframework.cloud.openfeign: DEBUG
 
-
-feign:
-  client:
-    config:
-      INVENTORY-SERVICE:
-        connectTimeout: 5000
-        readTimeout: 20000 
+# feign:
+#   client:
+#     config:
+#       INVENTORY-SERVICE:
+#         connectTimeout: 5000
+#         readTimeout: 20000 
 
 
