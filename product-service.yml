@@ -48,16 +48,28 @@ management:
       show-details: always
 
 # --- Feign Client Configuration ---
+# feign:
+#   httpclient:
+#     enabled: true      # ✅ Apache HTTP client enabled (production recommended)
+#   okhttp:
+#     enabled: false
+#   client:
+#     config:
+#       default:
+#         connectTimeout: 5000          # ⏱️ 5 sec connection timeout
+#         readTimeout: 20000             # ⏱️ 5 sec read timeout
+#         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
+
 feign:
   httpclient:
-    enabled: true      # ✅ Apache HTTP client enabled (production recommended)
+    enabled: true
   okhttp:
     enabled: false
   client:
     config:
-      default:
-        connectTimeout: 5000          # ⏱️ 5 sec connection timeout
-        readTimeout: 20000             # ⏱️ 5 sec read timeout
+      INVENTORY-SERVICE:
+        connectTimeout: 5000
+        readTimeout: 20000
         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
 
 # --- Resilience4J Configuration for INVENTORY-SERVICE ---
