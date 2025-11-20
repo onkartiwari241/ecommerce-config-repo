@@ -123,3 +123,12 @@ logging:
     feign.Logger: DEBUG
     org.springframework.cloud.openfeign: DEBUG
 
+
+feign:
+  client:
+    config:
+      INVENTORY-SERVICE:
+        connectTimeout: 5000
+        readTimeout: 20000 
+
+
