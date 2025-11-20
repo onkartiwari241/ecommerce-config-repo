@@ -87,15 +87,20 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
+          # NETWORK & FEIGN failures
           - java.io.IOException
           - java.net.SocketTimeoutException
           - feign.RetryableException
-          - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$InternalServerError
 
-        ignoreExceptions:
+          # YOUR SYSTEM FAILURE → should trigger CB
           - com.jmd.product.exception.DatabaseException
           - com.jmd.product.exception.ServiceException
+
+        ignoreExceptions:
+          # BUSINESS ERRORS → Do not open CB
           - com.jmd.product.exception.ResourceNotFoundException
           - com.jmd.product.exception.ValidateException
 
@@ -110,10 +115,13 @@ resilience4j:
           - java.net.SocketTimeoutException
           - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
+          - feign.RetryableException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
 
         ignoreExceptions:
-          - com.jmd.product.exception.DatabaseException
-          - com.jmd.product.exception.ServiceException
+          # - com.jmd.product.exception.DatabaseException
+          # - com.jmd.product.exception.ServiceException
           - com.jmd.product.exception.ResourceNotFoundException
           - com.jmd.product.exception.ValidateException
 
