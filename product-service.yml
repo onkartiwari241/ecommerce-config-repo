@@ -71,6 +71,10 @@ feign:
 
 # Resilience4J Configuration
 resilience4j:
+  timelimiter:
+    instances:
+      inventory-service-tl:
+        timeoutDuration: 30s
 
   circuitbreaker:
     instances:
