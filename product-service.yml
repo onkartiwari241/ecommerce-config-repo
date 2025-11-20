@@ -76,10 +76,10 @@ resilience4j:
       INVENTORY-SERVICE:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
-        slidingWindowSize: 10
+        slidingWindowSize: 5
         permittedNumberOfCallsInHalfOpenState: 3
-        minimumNumberOfCalls: 5
-        failureRateThreshold: 50
+        minimumNumberOfCalls: 1
+        failureRateThreshold: 30
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 2s
         waitDurationInOpenState: 10s
