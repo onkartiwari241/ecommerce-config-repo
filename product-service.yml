@@ -77,30 +77,28 @@ resilience4j:
       inventory-service-cb:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
-        slidingWindowSize: 5
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
         permittedNumberOfCallsInHalfOpenState: 3
-        minimumNumberOfCalls: 1
-        failureRateThreshold: 30
+        failureRateThreshold: 50
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 25s
         waitDurationInOpenState: 40s
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
-          # NETWORK & FEIGN failures
           - java.io.IOException
           - java.net.SocketTimeoutException
+          - java.net.ConnectException
+          - java.net.UnknownHostException
           - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
           - feign.FeignException$ServiceUnavailable
           - feign.FeignException$InternalServerError
-
-          # YOUR SYSTEM FAILURE → should trigger CB
           - com.jmd.product.exception.DatabaseException
           - com.jmd.product.exception.ServiceException
 
         ignoreExceptions:
-          # BUSINESS ERRORS → Do not open CB
           - com.jmd.product.exception.ResourceNotFoundException
           - com.jmd.product.exception.ValidateException
 
@@ -113,29 +111,26 @@ resilience4j:
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
+          - java.net.ConnectException
           - feign.RetryableException
-          - org.springframework.web.client.ResourceAccessException
-          - feign.RetryableException
-          - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
 
         ignoreExceptions:
-          # - com.jmd.product.exception.DatabaseException
-          # - com.jmd.product.exception.ServiceException
           - com.jmd.product.exception.ResourceNotFoundException
           - com.jmd.product.exception.ValidateException
 
   ratelimiter:
     instances:
       inventory-service-rl:
-        limitForPeriod: 50         # 50 calls allowed
-        limitRefreshPeriod: 1s     # per second
-        timeoutDuration: 5s
+        limitForPeriod: 50
+        limitRefreshPeriod: 1s
+        timeoutDuration: 0   # fail fast
 
-  timelimiter:
-    instances:
-      inventory-service-cb:
-        timeoutDuration: 30s
+  # timelimiter:
+  #   instances:
+  #     inventory-service-tl:
+  #       timeoutDuration: 30s
+
 
 logging:
   level:
