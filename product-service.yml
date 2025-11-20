@@ -81,7 +81,7 @@ resilience4j:
         minimumNumberOfCalls: 1
         failureRateThreshold: 30
         slowCallRateThreshold: 50
-        slowCallDurationThreshold: 20s
+        slowCallDurationThreshold: 25s
         waitDurationInOpenState: 40s
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
@@ -122,6 +122,11 @@ resilience4j:
         limitForPeriod: 10
         limitRefreshPeriod: 30s
         timeoutDuration: 5s
+
+  timelimiter:
+    instances:
+      INVENTORY-SERVICE:
+        timeoutDuration: 30s  
 
 logging:
   level:
