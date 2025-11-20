@@ -15,7 +15,7 @@ spring:
       discovery:
         enabled: true
       circuitbreaker:
-        enabled: true
+        enabled: false
 
 server:
   port: 8081
