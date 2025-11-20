@@ -65,15 +65,16 @@ feign:
   client:
     config:
       INVENTORY-SERVICE:
-        connectTimeout: 10000        # 10 seconds
-        readTimeout: 30000           # 30 seconds
+        connectTimeout: 10000
+        readTimeout: 30000
         errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
 
 # Resilience4J Configuration
 resilience4j:
+
   circuitbreaker:
     instances:
-      INVENTORY-SERVICE:
+      inventory-service-cb:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 5
@@ -100,7 +101,7 @@ resilience4j:
 
   retry:
     instances:
-      INVENTORY-SERVICE:
+      inventory-service-retry:
         maxAttempts: 3
         waitDuration: 5s
 
@@ -118,15 +119,15 @@ resilience4j:
 
   ratelimiter:
     instances:
-      INVENTORY-SERVICE:
-        limitForPeriod: 10
-        limitRefreshPeriod: 30s
+      inventory-service-rl:
+        limitForPeriod: 50         # 50 calls allowed
+        limitRefreshPeriod: 1s     # per second
         timeoutDuration: 5s
 
   timelimiter:
     instances:
-      INVENTORY-SERVICE:
-        timeoutDuration: 30s  
+      inventory-service-cb:
+        timeoutDuration: 30s
 
 logging:
   level:
