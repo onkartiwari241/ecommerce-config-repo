@@ -66,13 +66,17 @@ resilience4j:
         recordExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
-          - org.springframework.web.client.HttpServerErrorException
+          - java.net.ConnectException
+          - java.net.UnknownHostException
+          - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
+          - feign.FeignException$ServiceUnavailable
+          - feign.FeignException$InternalServerError
+          - com.jmd.product.exception.DatabaseException
+          - com.jmd.product.exception.ServiceException
 
         # ✅ Ignore business-level and globally handled exceptions
         ignoreExceptions:
-          - com.jmd.category.exception.DatabaseException
-          - com.jmd.category.exception.ServiceException
           - com.jmd.category.exception.ResourceNotFoundException
           - com.jmd.category.exception.ValidateException
 
@@ -87,12 +91,12 @@ resilience4j:
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
+          - java.net.ConnectException
+          - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
 
         # ✅ Never retry for business/handled exceptions
         ignoreExceptions:
-          - com.jmd.category.exception.DatabaseException
-          - com.jmd.category.exception.ServiceException
           - com.jmd.category.exception.ResourceNotFoundException
           - com.jmd.category.exception.ValidateException
 
