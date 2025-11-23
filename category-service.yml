@@ -50,7 +50,7 @@ logging:
 resilience4j:
   circuitbreaker:
     instances:
-      PRODUCT-SERVICE:
+      product-service-cb:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
@@ -79,7 +79,7 @@ resilience4j:
 
   retry:
     instances:
-      PRODUCT-SERVICE:
+      product-service-retry:
         maxAttempts: 3
         waitDuration: 2s
 
@@ -99,7 +99,7 @@ resilience4j:
 
   ratelimiter:
     instances:
-      PRODUCT-SERVICE:
+      product-service-rl:
         limitForPeriod: 5
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
