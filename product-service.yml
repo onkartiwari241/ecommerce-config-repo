@@ -130,11 +130,6 @@ resilience4j:
         limitRefreshPeriod: 1s
         timeoutDuration: 0   # fail fast
 
-  # timelimiter:
-  #   instances:
-  #     inventory-service-tl:
-  #       timeoutDuration: 30s
-
 
 logging:
   level:
