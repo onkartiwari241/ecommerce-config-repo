@@ -72,8 +72,8 @@ resilience4j:
           - org.springframework.web.client.ResourceAccessException
           - feign.FeignException$ServiceUnavailable
           - feign.FeignException$InternalServerError
-          - com.jmd.product.exception.DatabaseException
-          - com.jmd.product.exception.ServiceException
+          - com.jmd.category.exception.DatabaseException
+          - com.jmd.category.exception.ServiceException
 
         # ✅ Ignore business-level and globally handled exceptions
         ignoreExceptions:
