@@ -30,6 +30,11 @@ spring:
           uri: lb://ADDRESS-SERVICE
           predicates:
             - Path=/api/v1/addresses/**
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
 
       # Global CORS setup for dev environment
       globalcors:
