@@ -1,0 +1,6 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/authservice
+    username: postgres
+    password: onkar
+    driver-class-name: org.postgresql.Driver
