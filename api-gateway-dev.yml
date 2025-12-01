@@ -41,9 +41,20 @@ spring:
           uri: lb://AUTH-SERVICE
           predicates:
             - Path=/auth/**
+            - Method=GET,POST,OPTIONS
 
+      # FINAL WORKING CORS CONFIG
       globalcors:
         corsConfigurations:
           "[/**]":
-            allowedOrigins: "*"
-            allowedMethods: [ GET, POST, PUT, DELETE ]
+            allowedOrigins:
+              - "http://localhost:5173"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
