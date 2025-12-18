@@ -18,6 +18,7 @@ jwt:
   refresh-expiration-days: 30
   private-key: classpath:keys/rsa-private.pem
   public-key: classpath:keys/rsa-public.pem
+  key-id: jmd-auth-key-01
 
 management:
   tracing:
