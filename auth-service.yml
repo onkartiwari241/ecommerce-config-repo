@@ -1,3 +1,152 @@
+# spring:
+#   application:
+#     name: auth-service
+
+# server:
+#   port: 9090
+
+# eureka:
+#   client:
+#     register-with-eureka: true
+#     fetch-registry: true
+#     service-url:
+#       defaultZone: http://localhost:8761/eureka
+
+# jwt:
+#   issuer: jmd-auth-service
+#   access-expiration-minutes: 5
+#   refresh-expiration-days: 30
+#   private-key: classpath:keys/rsa-private.pem
+#   public-key: classpath:keys/rsa-public.pem
+#   key-id: jmd-auth-key-01
+
+# management:
+#   tracing:
+#     enabled: true
+#     sampling:
+#       probability: 1.0
+#   zipkin:
+#     tracing:
+#       endpoint: http://localhost:9411/api/v2/spans
+#   endpoints:
+#     web:
+#       exposure:
+#         include: "*"
+#   endpoint:
+#     health:
+#       show-details: always
+
+# logging:
+#   pattern:
+#     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+
+
+
+# # =====================================================
+# # 🔥 RESILIENCE4J CONFIG FOR AUTH-SERVICE
+# # =====================================================
+# resilience4j:
+#   circuitbreaker:
+#     instances:
+
+#       user-service-cb:
+#         registerHealthIndicator: true
+#         slidingWindowType: COUNT_BASED
+#         slidingWindowSize: 10
+#         permittedNumberOfCallsInHalfOpenState: 3
+#         minimumNumberOfCalls: 5
+#         failureRateThreshold: 50
+#         slowCallRateThreshold: 50
+#         slowCallDurationThreshold: 2s
+#         waitDurationInOpenState: 10s
+#         automaticTransitionFromOpenToHalfOpenEnabled: true
+
+#         recordExceptions:
+#           - com.jmd.authservice.exception.ServiceException
+#           - com.jmd.authservice.exception.ClientRegistrationException
+#           - java.io.IOException
+#           - java.net.SocketTimeoutException
+#           - org.springframework.web.client.HttpServerErrorException
+#           - org.springframework.web.client.ResourceAccessException
+
+#         ignoreExceptions:
+#           - com.jmd.authservice.exception.ResourceNotFoundException
+#           - com.jmd.authservice.exception.ConflictException
+#           - com.jmd.authservice.exception.AuthException
+#           - com.jmd.authservice.exception.TokenException
+
+#       notification-service-cb:
+#         registerHealthIndicator: true
+#         slidingWindowType: COUNT_BASED
+#         slidingWindowSize: 10
+#         permittedNumberOfCallsInHalfOpenState: 3
+#         minimumNumberOfCalls: 5
+#         failureRateThreshold: 50
+#         slowCallRateThreshold: 50
+#         slowCallDurationThreshold: 2s
+#         waitDurationInOpenState: 10s
+#         automaticTransitionFromOpenToHalfOpenEnabled: true
+
+#         recordExceptions:
+#           - java.io.IOException
+#           - java.net.SocketTimeoutException
+#           - org.springframework.web.client.HttpServerErrorException
+#           - org.springframework.web.client.ResourceAccessException
+
+#         ignoreExceptions:
+#           - com.jmd.authservice.exception.ResourceNotFoundException
+#           - com.jmd.authservice.exception.ConflictException
+#           - com.jmd.authservice.exception.AuthException
+#           - com.jmd.authservice.exception.TokenException
+
+
+#   retry:
+#     instances:
+
+#       user-service-retry:
+#         maxAttempts: 3
+#         waitDuration: 2s
+#         retryExceptions:
+#           - java.io.IOException
+#           - java.net.SocketTimeoutException
+#           - org.springframework.web.client.ResourceAccessException
+
+#       notification-service-retry:
+#         maxAttempts: 3
+#         waitDuration: 2s
+#         retryExceptions:
+#           - java.io.IOException
+#           - java.net.SocketTimeoutException
+#           - org.springframework.web.client.ResourceAccessException
+
+
+#   ratelimiter:
+#     instances:
+
+#       user-service-rl:
+#         limitForPeriod: 5
+#         limitRefreshPeriod: 10s
+#         timeoutDuration: 1s
+
+#       notification-service-rl:
+#         limitForPeriod: 5
+#         limitRefreshPeriod: 10s
+#         timeoutDuration: 1s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 spring:
   application:
     name: auth-service
@@ -5,6 +154,9 @@ spring:
 server:
   port: 9090
 
+# =====================================================
+# 🔹 EUREKA CONFIG
+# =====================================================
 eureka:
   client:
     register-with-eureka: true
@@ -12,6 +164,9 @@ eureka:
     service-url:
       defaultZone: http://localhost:8761/eureka
 
+# =====================================================
+# 🔹 JWT CONFIG (RSA + JWKS)
+# =====================================================
 jwt:
   issuer: jmd-auth-service
   access-expiration-minutes: 5
@@ -20,6 +175,9 @@ jwt:
   public-key: classpath:keys/rsa-public.pem
   key-id: jmd-auth-key-01
 
+# =====================================================
+# 🔹 ACTUATOR + TRACING
+# =====================================================
 management:
   tracing:
     enabled: true
@@ -36,16 +194,21 @@ management:
     health:
       show-details: always
 
+# =====================================================
+# 🔹 LOGGING (TRACE-ID FRIENDLY)
+# =====================================================
 logging:
   pattern:
     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
 
-
-
 # =====================================================
-# 🔥 RESILIENCE4J CONFIG FOR AUTH-SERVICE
+# 🔥 RESILIENCE4J CONFIGURATION
 # =====================================================
 resilience4j:
+
+  # -------------------------------
+  # CIRCUIT BREAKERS
+  # -------------------------------
   circuitbreaker:
     instances:
 
@@ -53,8 +216,8 @@ resilience4j:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
         minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
         failureRateThreshold: 50
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 2s
@@ -62,25 +225,27 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
-          - com.jmd.authservice.exception.ServiceException
-          - com.jmd.authservice.exception.ClientRegistrationException
           - java.io.IOException
           - java.net.SocketTimeoutException
-          - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - com.jmd.authservice.exception.ServiceException
+          - com.jmd.authservice.exception.ClientRegistrationException
 
         ignoreExceptions:
           - com.jmd.authservice.exception.ResourceNotFoundException
           - com.jmd.authservice.exception.ConflictException
           - com.jmd.authservice.exception.AuthException
           - com.jmd.authservice.exception.TokenException
+          - com.jmd.authservice.exception.RateLimitException
+
 
       notification-service-cb:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
         minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
         failureRateThreshold: 50
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 2s
@@ -90,36 +255,50 @@ resilience4j:
         recordExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
-          - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
 
         ignoreExceptions:
-          - com.jmd.authservice.exception.ResourceNotFoundException
-          - com.jmd.authservice.exception.ConflictException
           - com.jmd.authservice.exception.AuthException
           - com.jmd.authservice.exception.TokenException
+          - com.jmd.authservice.exception.RateLimitException
 
 
+  # -------------------------------
+  # RETRY CONFIGURATION
+  # -------------------------------
   retry:
     instances:
 
       user-service-retry:
         maxAttempts: 3
-        waitDuration: 2s
+        waitDuration: 2s   # DEV / LOCAL
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
+
+        # PROD RECOMMENDED
+        # waitDuration: 5s
+        # maxAttempts: 3
+
 
       notification-service-retry:
         maxAttempts: 3
-        waitDuration: 2s
+        waitDuration: 2s   # DEV / LOCAL
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
 
+        # PROD RECOMMENDED
+        # waitDuration: 5s
+        # maxAttempts: 3
 
+
+  # -------------------------------
+  # RATE LIMITER
+  # -------------------------------
   ratelimiter:
     instances:
 
