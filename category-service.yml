@@ -1,13 +1,12 @@
 spring:
   application:
     name: category-service
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+    
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://auth-service/.well-known/jwks.json
 
 server:
   port: 8082
