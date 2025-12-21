@@ -35,7 +35,7 @@ spring:
         - id: address-service
           uri: lb://ADDRESS-SERVICE
           predicates:
-            - Path=/api/v1/addresses/**
+            - Path=/api/v1/address/**
 
         - id: auth-service
           uri: lb://AUTH-SERVICE
