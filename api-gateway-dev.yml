@@ -43,3 +43,9 @@ spring:
             - Path=/auth/**
           # filters:
           #   - StripPrefix=1
+
+
+        - id: vendor-service
+          uri: lb://VENDOR-SERVICE
+          predicates:
+            - Path=/api/v1/vendors/**
