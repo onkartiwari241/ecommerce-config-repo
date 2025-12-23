@@ -169,7 +169,7 @@ eureka:
 # =====================================================
 jwt:
   issuer: jmd-auth-service
-  access-expiration-minutes: 5
+  access-expiration-minutes: 30
   refresh-expiration-days: 30
   private-key: classpath:keys/rsa-private.pem
   public-key: classpath:keys/rsa-public.pem
