@@ -49,3 +49,8 @@ spring:
           uri: lb://VENDOR-SERVICE
           predicates:
             - Path=/api/v1/vendors/**
+
+        - id: cart-service
+          uri: lb://CART-SERVICE
+          predicates:
+            - Path=/api/v1/cart/**
