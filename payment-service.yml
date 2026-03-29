@@ -13,6 +13,7 @@ spring:
 razorpay:
   key: ${RAZORPAY_KEY}
   secret: ${RAZORPAY_SECRET}
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET
 
   # -----  Redis configuration  ----
   # redis:
