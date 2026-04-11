@@ -48,97 +48,104 @@ management:
     health:
       show-details: always
 
-# ✅ ✅ --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
+#  --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
 logging:
   level:
-    # root: TRACE
-    # org.springframework: TRACE
-    # org.springframework.web: TRACE
+    com.jmd.user: TRACE
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.jmd.user: TRACE   # your package fully enabled
 
   pattern:
     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
 
 # --- Resilience4J Configuration ---
 resilience4j:
+
   circuitbreaker:
     instances:
-      USER-SERVICE:
+    
+      address-service-cb:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
         minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        
         failureRateThreshold: 50
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 2s
+        
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
+        
         recordExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
-          - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
-        ignoreExceptions:
-          - com.jmd.common.exception.ResourceNotFoundException
-          - com.jmd.common.exception.ResourceAlreadyExistsException
-
-      ADDRESS-SERVICE:
-        registerHealthIndicator: true
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
-        minimumNumberOfCalls: 5
-        failureRateThreshold: 50
-        slowCallRateThreshold: 50
-        slowCallDurationThreshold: 2s
-        waitDurationInOpenState: 10s
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        recordExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
           - org.springframework.web.client.HttpServerErrorException
-          - org.springframework.web.client.ResourceAccessException
-          - com.jmd.common.exception.AddressServiceUnavailableException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+          
         ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
           - com.jmd.common.exception.ResourceNotFoundException
-          - com.jmd.common.exception.ResourceAlreadyExistsException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
 
+      media-service-cb:
+        baseConfig: address-service-cb
+
+      vendor-service-cb:
+        baseConfig: address-service-cb
+
+ # -------------------------
+ # RETRY
+ # -------------------------
   retry:
     instances:
-      USER-SERVICE:
+    
+      address-service-retry:
         maxAttempts: 3
         waitDuration: 2s
+        
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+          
         ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
           - com.jmd.common.exception.ResourceNotFoundException
-          - com.jmd.common.exception.ResourceAlreadyExistsException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
 
-      ADDRESS-SERVICE:
-        maxAttempts: 3
-        waitDuration: 2s
-        retryExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
-          - org.springframework.web.client.ResourceAccessException
-          - com.jmd.common.exception.AddressServiceUnavailableException
-        ignoreExceptions:
-          - com.jmd.common.exception.ResourceNotFoundException
-          - com.jmd.common.exception.ResourceAlreadyExistsException
+      media-service-retry:
+        baseConfig: address-service-retry
 
+      vendor-service-retry:
+        baseConfig: address-service-retry
+
+  # -------------------------
+  # RATE LIMITER
+  # -------------------------       
   ratelimiter:
     instances:
-      USER-SERVICE:
+    
+      address-service-rl:
         limitForPeriod: 5
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
 
-      ADDRESS-SERVICE:
+      media-service-rl:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+      vendor-service-rl:
         limitForPeriod: 5
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
