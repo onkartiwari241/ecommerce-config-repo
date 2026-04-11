@@ -82,13 +82,13 @@ resilience4j:
           - org.springframework.web.client.ResourceAccessException
           - feign.FeignException$ServiceUnavailable
           - feign.FeignException$InternalServerError
-          - com.jmd.category.exception.DatabaseException
-          - com.jmd.category.exception.ServiceException
+          - com.jmd.common.exception.DatabaseException
+          - com.jmd.common.exception.ServiceException
 
         # ✅ Ignore business-level and globally handled exceptions
         ignoreExceptions:
-          - com.jmd.category.exception.ResourceNotFoundException
-          - com.jmd.category.exception.ValidateException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ValidateException
 
 
   retry:
@@ -107,8 +107,8 @@ resilience4j:
 
         # ✅ Never retry for business/handled exceptions
         ignoreExceptions:
-          - com.jmd.category.exception.ResourceNotFoundException
-          - com.jmd.category.exception.ValidateException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ValidateException
 
 
   ratelimiter:
