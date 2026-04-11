@@ -80,70 +80,114 @@ feign:
         readTimeout: 30000
         errorDecoder: com.jmd.product.clients.FeignCustomErrorDecoder
 
-# Resilience4J Configuration
+# -------------------------------
+# RESILIENCE4J
+# -------------------------------
 resilience4j:
-  timelimiter:
-    instances:
-      inventory-service-tl:
-        timeoutDuration: 30s
 
   circuitbreaker:
     instances:
-      inventory-service-cb:
+
+      address-service-cb:
         registerHealthIndicator: true
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
         permittedNumberOfCallsInHalfOpenState: 3
+
         failureRateThreshold: 50
         slowCallRateThreshold: 50
-        slowCallDurationThreshold: 25s
-        waitDurationInOpenState: 40s
+        slowCallDurationThreshold: 2s
+
+        waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
-          - java.net.ConnectException
-          - java.net.UnknownHostException
-          - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
-          - feign.FeignException$ServiceUnavailable
+          - feign.RetryableException
           - feign.FeignException$InternalServerError
-          - com.jmd.common.exception.DatabaseException
+          - feign.FeignException$ServiceUnavailable
           - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
 
         ignoreExceptions:
           - com.jmd.common.exception.ResourceNotFoundException
           - com.jmd.common.exception.ValidateException
+          - com.jmd.common.exception.BadRequestException
 
+      category-service-cb:
+        baseConfig: address-service-cb
+
+      inventory-service-cb:
+        baseConfig: address-service-cb
+
+      media-service-cb:
+        baseConfig: address-service-cb
+
+  # -------------------------------
+  # RETRY
+  # -------------------------------
   retry:
     instances:
-      inventory-service-retry:
+
+      address-service-retry:
         maxAttempts: 3
-        waitDuration: 5s
+        waitDuration: 2s
 
         retryExceptions:
           - java.io.IOException
           - java.net.SocketTimeoutException
-          - java.net.ConnectException
-          - feign.RetryableException
           - org.springframework.web.client.ResourceAccessException
+          - feign.RetryableException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
 
         ignoreExceptions:
           - com.jmd.common.exception.ResourceNotFoundException
           - com.jmd.common.exception.ValidateException
+          - com.jmd.common.exception.BadRequestException
 
+      category-service-retry:
+        baseConfig: address-service-retry
+
+      inventory-service-retry:
+        baseConfig: address-service-retry
+
+      media-service-retry:
+        baseConfig: address-service-retry
+
+  # -------------------------------
+  # RATE LIMITER
+  # -------------------------------
   ratelimiter:
     instances:
+
+      address-service-rl:
+        limitForPeriod: 10
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+      category-service-rl:
+        baseConfig: address-service-rl
+
       inventory-service-rl:
-        limitForPeriod: 50
-        limitRefreshPeriod: 1s
-        timeoutDuration: 0   # fail fast
+        baseConfig: address-service-rl
 
+      media-service-rl:
+        baseConfig: address-service-rl
 
+# -------------------------------
+# LOGGING
+# -------------------------------
 logging:
   level:
-    com.jmd.product.feignclient.InventoryServiceClient: DEBUG
-    feign.Logger: DEBUG
-    org.springframework.cloud.openfeign: DEBUG
+    com.jmd.product: DEBUG
+    feign.Logger: BASIC
+    org.springframework.cloud.openfeign: INFO
+
+  pattern:
+    level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
