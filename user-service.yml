@@ -82,8 +82,8 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
         ignoreExceptions:
-          - com.jmd.user.exception.ResourceNotFoundException
-          - com.jmd.user.exception.ResourceAlreadyExistsException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ResourceAlreadyExistsException
 
       ADDRESS-SERVICE:
         registerHealthIndicator: true
@@ -101,10 +101,10 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
-          - com.jmd.user.exception.AddressServiceUnavailableException
+          - com.jmd.common.exception.AddressServiceUnavailableException
         ignoreExceptions:
-          - com.jmd.user.exception.ResourceNotFoundException
-          - com.jmd.user.exception.ResourceAlreadyExistsException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ResourceAlreadyExistsException
 
   retry:
     instances:
@@ -116,8 +116,8 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
         ignoreExceptions:
-          - com.jmd.user.exception.ResourceNotFoundException
-          - com.jmd.user.exception.ResourceAlreadyExistsException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ResourceAlreadyExistsException
 
       ADDRESS-SERVICE:
         maxAttempts: 3
@@ -126,10 +126,10 @@ resilience4j:
           - java.io.IOException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
-          - com.jmd.user.exception.AddressServiceUnavailableException
+          - com.jmd.common.exception.AddressServiceUnavailableException
         ignoreExceptions:
-          - com.jmd.user.exception.ResourceNotFoundException
-          - com.jmd.user.exception.ResourceAlreadyExistsException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ResourceAlreadyExistsException
 
   ratelimiter:
     instances:
