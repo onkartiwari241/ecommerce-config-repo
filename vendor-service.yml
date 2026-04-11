@@ -78,11 +78,11 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
           - org.springframework.web.client.HttpServerErrorException
-          - com.jmd.multivendor.vendor_service.exception.ServiceException
+          - com.jmd.common.exception.ServiceException
         ignoreExceptions:
-          - com.jmd.multivendor.vendor_service.exception.ResourceNotFoundException
-          - com.jmd.multivendor.vendor_service.exception.BadRequestException
-          - com.jmd.multivendor.vendor_service.exception.AccessDeniedException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.AccessDeniedException
 
   retry:
     instances:
@@ -94,9 +94,9 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
         ignoreExceptions:
-          - com.jmd.multivendor.vendor_service.exception.ResourceNotFoundException
-          - com.jmd.multivendor.vendor_service.exception.BadRequestException
-          - com.jmd.multivendor.vendor_service.exception.AccessDeniedException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.AccessDeniedException
 
   ratelimiter:
     instances:
