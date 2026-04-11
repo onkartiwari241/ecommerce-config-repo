@@ -78,7 +78,7 @@ feign:
       INVENTORY-SERVICE:
         connectTimeout: 10000
         readTimeout: 30000
-        errorDecoder: com.jmd.product.exception.FeignCustomErrorDecoder
+        errorDecoder: com.jmd.product.clients.FeignCustomErrorDecoder
 
 # Resilience4J Configuration
 resilience4j:
@@ -110,12 +110,12 @@ resilience4j:
           - org.springframework.web.client.ResourceAccessException
           - feign.FeignException$ServiceUnavailable
           - feign.FeignException$InternalServerError
-          - com.jmd.product.exception.DatabaseException
-          - com.jmd.product.exception.ServiceException
+          - com.jmd.common.exception.DatabaseException
+          - com.jmd.common.exception.ServiceException
 
         ignoreExceptions:
-          - com.jmd.product.exception.ResourceNotFoundException
-          - com.jmd.product.exception.ValidateException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ValidateException
 
   retry:
     instances:
@@ -131,8 +131,8 @@ resilience4j:
           - org.springframework.web.client.ResourceAccessException
 
         ignoreExceptions:
-          - com.jmd.product.exception.ResourceNotFoundException
-          - com.jmd.product.exception.ValidateException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ValidateException
 
   ratelimiter:
     instances:
