@@ -77,13 +77,13 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.HttpServerErrorException
           - org.springframework.web.client.ResourceAccessException
-          - com.jmd.payment.exception.ServiceUnavailableException
-          - com.jmd.payment.exception.PaymentGatewayException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.PaymentGatewayException
 
         ignoreExceptions:
-          - com.jmd.payment.exception.BadRequestException
-          - com.jmd.payment.exception.PaymentValidationException
-          - com.jmd.payment.exception.PaymentNotFoundException
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.PaymentValidationException
+          - com.jmd.common.exception.PaymentNotFoundException
 
   retry:
     instances:
@@ -95,11 +95,11 @@ resilience4j:
           - java.io.IOException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
-          - com.jmd.payment.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ServiceUnavailableException
 
         ignoreExceptions:
-          - com.jmd.payment.exception.BadRequestException
-          - com.jmd.payment.exception.PaymentValidationException
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.PaymentValidationException
 
   ratelimiter:
     instances:
