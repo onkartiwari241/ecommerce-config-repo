@@ -91,15 +91,15 @@ resilience4j:
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
           - org.springframework.web.client.HttpServerErrorException
-          - com.jmd.authservice.exception.ServiceException
-          - com.jmd.authservice.exception.ClientRegistrationException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ClientRegistrationException
 
         ignoreExceptions:
-          - com.jmd.authservice.exception.ResourceNotFoundException
-          - com.jmd.authservice.exception.ConflictException
-          - com.jmd.authservice.exception.AuthException
-          - com.jmd.authservice.exception.TokenException
-          - com.jmd.authservice.exception.RateLimitException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.AuthException
+          - com.jmd.common.exception.TokenException
+          - com.jmd.common.exception.RateLimitException
 
 
       notification-service-cb:
@@ -121,9 +121,9 @@ resilience4j:
           - org.springframework.web.client.HttpServerErrorException
 
         ignoreExceptions:
-          - com.jmd.authservice.exception.AuthException
-          - com.jmd.authservice.exception.TokenException
-          - com.jmd.authservice.exception.RateLimitException
+          - com.jmd.common.exception.AuthException
+          - com.jmd.common.exception.TokenException
+          - com.jmd.common.exception.RateLimitException
 
 
   # -------------------------------
