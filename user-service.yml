@@ -79,6 +79,7 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
         
         recordExceptions:
+          - feign.FeignException
           - java.io.IOException
           - feign.RetryableException
           - java.net.ConnectException
