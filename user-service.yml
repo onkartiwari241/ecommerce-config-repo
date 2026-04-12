@@ -80,7 +80,6 @@ resilience4j:
         
         recordExceptions:
           - java.io.IOException
-          - java.net.SocketTimeoutException
           - feign.RetryableException
           - java.net.ConnectException
           - java.net.SocketTimeoutException
@@ -114,6 +113,8 @@ resilience4j:
         
         retryExceptions:
           - java.io.IOException
+          - feign.RetryableException
+          - java.net.ConnectException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
           - com.jmd.common.exception.ServiceException
