@@ -32,30 +32,133 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
-# Resilience4j Circuit Breaker Config
+# ================================
+# RESILIENCE4J (CORRECT)
+# ================================
 resilience4j:
+
+  # ================================
+  # CIRCUIT BREAKER
+  # ================================
   circuitbreaker:
-    instances:
-      ORDER-SERVICE:
+
+    configs:
+      default:
         registerHealthIndicator: true
-        slidingWindowSize: 5
-        failureRateThreshold: 50
-        waitDurationInOpenState: 5s
+
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+
         permittedNumberOfCallsInHalfOpenState: 3
-        minimumNumberOfCalls: 4
+
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+
+        waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
-  retry:
+
+        recordExceptions:
+          - feign.FeignException
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+
+        ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
+
     instances:
-      ORDER-SERVICE:
+      address-service-cb:
+        baseConfig: default
+      product-service-cb:
+        baseConfig: default
+      inventory-service-cb:
+        baseConfig: default
+      user-service-cb:
+        baseConfig: default
+      cart-service-cb:
+        baseConfig: default
+
+  # ================================
+  # RETRY
+  # ================================
+  retry:
+
+    configs:
+      default:
         maxAttempts: 3
         waitDuration: 2s
-  ratelimiter:
-    instances:
-      ORDER-SERVICE:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 0
 
+        retryExceptions:
+          - feign.FeignException
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+
+        ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
+
+    instances:
+      address-service-retry:
+        baseConfig: default
+      product-service-retry:
+        baseConfig: default
+      inventory-service-retry:
+        baseConfig: default
+      user-service-retry:
+        baseConfig: default
+      cart-service-retry:
+        baseConfig: default
+
+  # ================================
+  # RATE LIMITER
+  # ================================
+  ratelimiter:
+
+    configs:
+      default:
+        limitForPeriod: 10
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+    instances:
+      address-service-rl:
+        baseConfig: default
+      product-service-rl:
+        baseConfig: default
+      inventory-service-rl:
+        baseConfig: default
+      user-service-rl:
+        baseConfig: default
+      cart-service-rl:
+        baseConfig: default
+
+# ================================
+# ACTUATOR + TRACING
+# ================================
 # Distributed tracing and Zipkin
 management:
   tracing:
@@ -64,7 +167,7 @@ management:
       probability: 1.0
   zipkin:
     tracing:
-      endpoint: 'http://localhost:9411/api/v2/spans'
+      endpoint: http://localhost:9411/api/v2/spans
 
   # Expose all actuator endpoints
   endpoints:
@@ -74,7 +177,29 @@ management:
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
 
+  health:
+    circuitbreakers:
+      enabled: true
+
+feign:
+  httpclient:
+    enabled: true
+  okhttp:
+    enabled: false
+
+# ================================
+# LOGGING
+# ================================
 logging:
+  level:
+    com.jmd.order: DEBUG
+    feign.Logger: BASIC
+    org.springframework.cloud.openfeign: INFO
+
   pattern:
-    level: '%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]'
+    level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
