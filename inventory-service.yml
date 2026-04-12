@@ -39,7 +39,112 @@ management:
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
 
+  health:
+    circuitbreakers:
+      enabled: true
+
+feign:
+  httpclient:
+    enabled: true
+  okhttp:
+    enabled: false
+
+# -------------------------
+# RESILIENCE4J
+# -------------------------
+resilience4j:
+
+  circuitbreaker:
+    instances:
+
+      address-service-cb:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+        recordExceptions:
+          - feign.FeignException
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+
+        ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+
+      product-service-cb:
+        baseConfig: address-service-cb
+
+  retry:
+    instances:
+
+      address-service-retry:
+        maxAttempts: 3
+        waitDuration: 2s
+
+        retryExceptions:
+          - feign.FeignException
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+
+        ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+
+      product-service-retry:
+        baseConfig: address-service-retry
+
+  ratelimiter:
+    instances:
+
+      address-service-rl:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+      product-service-rl:
+        baseConfig: address-service-rl
+
+# -------------------------
+# LOGGING
+# -------------------------
 logging:
+  level:
+    com.jmd.inventory: DEBUG
+    feign.Logger: BASIC
+    org.springframework.cloud.openfeign: INFO
+
   pattern:
-    level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+    level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
