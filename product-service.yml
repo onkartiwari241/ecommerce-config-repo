@@ -78,7 +78,6 @@ feign:
       INVENTORY-SERVICE:
         connectTimeout: 10000
         readTimeout: 30000
-        errorDecoder: com.jmd.product.clients.FeignCustomErrorDecoder
 
 # -------------------------------
 # RESILIENCE4J
@@ -103,20 +102,22 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
+          - feign.FeignException
           - java.io.IOException
+          - feign.RetryableException
+          - java.net.ConnectException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
-          - feign.RetryableException
-          - feign.FeignException$InternalServerError
-          - feign.FeignException$ServiceUnavailable
+          - org.springframework.web.client.HttpServerErrorException
           - com.jmd.common.exception.ServiceException
           - com.jmd.common.exception.ServiceUnavailableException
           - com.jmd.common.exception.ClientNullException
 
         ignoreExceptions:
-          - com.jmd.common.exception.ResourceNotFoundException
-          - com.jmd.common.exception.ValidateException
           - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
 
       category-service-cb:
         baseConfig: address-service-cb
@@ -139,17 +140,19 @@ resilience4j:
 
         retryExceptions:
           - java.io.IOException
+          - feign.RetryableException
+          - java.net.ConnectException
           - java.net.SocketTimeoutException
           - org.springframework.web.client.ResourceAccessException
-          - feign.RetryableException
           - com.jmd.common.exception.ServiceException
           - com.jmd.common.exception.ServiceUnavailableException
           - com.jmd.common.exception.ClientNullException
 
         ignoreExceptions:
-          - com.jmd.common.exception.ResourceNotFoundException
-          - com.jmd.common.exception.ValidateException
           - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
 
       category-service-retry:
         baseConfig: address-service-retry
