@@ -1,24 +1,27 @@
-
 spring:
   application:
     name: payment-service
-    
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          # jwk-set-uri: http://auth-service/.well-known/jwks.json
           jwk-set-uri: http://localhost:9090/.well-known/jwks.json
 
+# =========================
+# RAZORPAY CONFIG
+# =========================
 razorpay:
   key: ${RAZORPAY_KEY}
   secret: ${RAZORPAY_SECRET}
-  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET
+  webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
 
 server:
   port: 9292
 
-# --- Eureka configuration ---
+# =========================
+# EUREKA
+# =========================
 eureka:
   client:
     service-url:
@@ -26,84 +29,158 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
 
-# --- Distributed tracing, Zipkin, and Actuator ---
+# =========================
+# FEIGN (ORDER SERVICE)
+# =========================
+feign:
+  httpclient:
+    enabled: true
+  okhttp:
+    enabled: false
+  client:
+    config:
+      ORDER-SERVICE:
+        connectTimeout: 5000
+        readTimeout: 20000
+
+# =========================
+# RESILIENCE4J
+# =========================
+resilience4j:
+
+  # ------------------------
+  # CIRCUIT BREAKER
+  # ------------------------
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowType: COUNT_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+
+        failureRateThreshold: 50
+        slowCallRateThreshold: 50
+        slowCallDurationThreshold: 2s
+
+        waitDurationInOpenState: 10s
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+
+        # INFRA + GATEWAY failures
+        recordExceptions:
+          - feign.FeignException
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+          - com.jmd.payment.exception.PaymentGatewayException
+
+        # ✅ BUSINESS errors (NO CB trigger)
+        ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
+          - com.jmd.payment.exception.PaymentException
+
+    instances:
+      order-service-cb:
+        baseConfig: default
+
+  # ------------------------
+  # RETRY
+  # ------------------------
+  retry:
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 2s
+
+        retryExceptions:
+          - feign.FeignException
+          - feign.RetryableException
+          - java.io.IOException
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - org.springframework.web.client.ResourceAccessException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
+          - com.jmd.payment.exception.PaymentGatewayException
+
+        ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
+          - com.jmd.payment.exception.PaymentException
+
+    instances:
+      order-service-retry:
+        baseConfig: default
+
+  # ------------------------
+  # RATE LIMITER
+  # ------------------------
+  ratelimiter:
+    configs:
+      default:
+        limitForPeriod: 5
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+    instances:
+      order-service-rl:
+        baseConfig: default
+
+# =========================
+# ACTUATOR + TRACING
+# =========================
 management:
   tracing:
     enabled: true
     sampling:
       probability: 1.0
+
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
+
   endpoints:
     web:
       exposure:
         include: '*'
+
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
 
-# ✅ ✅ --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
+  health:
+    circuitbreakers:
+      enabled: true
+
+# =========================
+# LOGGING
+# =========================
 logging:
   level:
-    # root: TRACE
-    # org.springframework: TRACE
-    # org.springframework.web: TRACE
+    com.jmd.payment: DEBUG
+    feign.Logger: BASIC
+    org.springframework.cloud.openfeign: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.jmd.payment: TRACE   # your package fully enabled
 
   pattern:
     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
-
-# --- Resilience4J Configuration ---
-resilience4j:
-  circuitbreaker:
-    instances:
-      ORDER-SERVICE:
-        registerHealthIndicator: true
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
-        minimumNumberOfCalls: 5
-        failureRateThreshold: 50
-        slowCallRateThreshold: 50
-        slowCallDurationThreshold: 2s
-        waitDurationInOpenState: 10s
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-
-        recordExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
-          - org.springframework.web.client.HttpServerErrorException
-          - org.springframework.web.client.ResourceAccessException
-          - com.jmd.common.exception.ServiceUnavailableException
-          - com.jmd.common.exception.PaymentGatewayException
-
-        ignoreExceptions:
-          - com.jmd.common.exception.BadRequestException
-          - com.jmd.common.exception.PaymentValidationException
-          - com.jmd.common.exception.PaymentNotFoundException
-
-  retry:
-    instances:
-      ORDER-SERVICE:
-        maxAttempts: 3
-        waitDuration: 2s
-
-        retryExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
-          - org.springframework.web.client.ResourceAccessException
-          - com.jmd.common.exception.ServiceUnavailableException
-
-        ignoreExceptions:
-          - com.jmd.common.exception.BadRequestException
-          - com.jmd.common.exception.PaymentValidationException
-
-  ratelimiter:
-    instances:
-      ORDER-SERVICE:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 1s
