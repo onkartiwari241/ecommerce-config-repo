@@ -26,7 +26,7 @@ spring:
       discovery:
         enabled: true
       circuitbreaker:
-        enabled: false
+        enabled: true
 
 server:
   port: 8081
@@ -84,14 +84,19 @@ feign:
 # -------------------------------
 resilience4j:
 
+  # ================================
+  # CIRCUIT BREAKER
+  # ================================
   circuitbreaker:
-    instances:
 
-      address-service-cb:
+    configs:
+      default:
         registerHealthIndicator: true
+
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
+
         permittedNumberOfCallsInHalfOpenState: 3
 
         failureRateThreshold: 50
@@ -109,6 +114,7 @@ resilience4j:
           - java.net.SocketTimeoutException
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
           - com.jmd.common.exception.ServiceException
           - com.jmd.common.exception.ServiceUnavailableException
           - com.jmd.common.exception.ClientNullException
@@ -118,23 +124,25 @@ resilience4j:
           - com.jmd.common.exception.ResourceNotFoundException
           - com.jmd.common.exception.AccessDeniedException
           - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
 
-      category-service-cb:
-        baseConfig: address-service-cb
-
-      inventory-service-cb:
-        baseConfig: address-service-cb
-
-      media-service-cb:
-        baseConfig: address-service-cb
-
-  # -------------------------------
-  # RETRY
-  # -------------------------------
-  retry:
     instances:
+      address-service-cb:
+        baseConfig: default
+      inventory-service-cb:
+        baseConfig: default
+      media-service-cb:
+        baseConfig: default
+      category-service-cb:
+        baseConfig: default
 
-      address-service-retry:
+  # ================================
+  # RETRY
+  # ================================
+  retry:
+
+    configs:
+      default:
         maxAttempts: 3
         waitDuration: 2s
 
@@ -146,6 +154,7 @@ resilience4j:
           - java.net.SocketTimeoutException
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
           - com.jmd.common.exception.ServiceException
           - com.jmd.common.exception.ServiceUnavailableException
           - com.jmd.common.exception.ClientNullException
@@ -155,35 +164,38 @@ resilience4j:
           - com.jmd.common.exception.ResourceNotFoundException
           - com.jmd.common.exception.AccessDeniedException
           - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
 
-      category-service-retry:
-        baseConfig: address-service-retry
-
-      inventory-service-retry:
-        baseConfig: address-service-retry
-
-      media-service-retry:
-        baseConfig: address-service-retry
-
-  # -------------------------------
-  # RATE LIMITER
-  # -------------------------------
-  ratelimiter:
     instances:
+      address-service-retry:
+        baseConfig: default
+      inventory-service-retry:
+        baseConfig: default
+      media-service-retry:
+        baseConfig: default
+      category-service-retry:
+        baseConfig: default
 
-      address-service-rl:
+  # ================================
+  # RATE LIMITER
+  # ================================
+  ratelimiter:
+
+    configs:
+      default:
         limitForPeriod: 10
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
 
-      category-service-rl:
-        baseConfig: address-service-rl
-
+    instances:
+      address-service-rl:
+        baseConfig: default
       inventory-service-rl:
-        baseConfig: address-service-rl
-
+        baseConfig: default
       media-service-rl:
-        baseConfig: address-service-rl
+        baseConfig: default
+      category-service-rl:
+        baseConfig: default
 
 # -------------------------------
 # LOGGING
