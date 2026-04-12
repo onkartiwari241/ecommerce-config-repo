@@ -37,139 +37,177 @@ jwt:
   public-key: classpath:keys/rsa-public.pem
   key-id: jmd-auth-key-01
 
-# =====================================================
-# 🔹 ACTUATOR + TRACING
-# =====================================================
+# =========================
+# FEIGN CONFIG
+# =========================
+feign:
+  httpclient:
+    enabled: true
+  okhttp:
+    enabled: false
+  client:
+    config:
+      USER-SERVICE:
+        connectTimeout: 5000
+        readTimeout: 20000
+      NOTIFICATION-SERVICE:
+        connectTimeout: 5000
+        readTimeout: 20000
+
+# =========================
+# ACTUATOR + TRACING
+# =========================
 management:
   tracing:
     enabled: true
     sampling:
       probability: 1.0
+
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
+
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: '*'
+
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
 
-# =====================================================
-# 🔹 LOGGING (TRACE-ID FRIENDLY)
-# =====================================================
+  health:
+    circuitbreakers:
+      enabled: true
+
+# =========================
+# LOGGING
+# =========================
 logging:
+  level:
+    com.jmd.authservice: DEBUG
+    feign.Logger: BASIC
+    org.springframework.cloud.openfeign: INFO
+
   pattern:
     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
 
 # =====================================================
 # 🔥 RESILIENCE4J CONFIGURATION
 # =====================================================
+# =========================
+# RESILIENCE4J
+# =========================
 resilience4j:
 
-  # -------------------------------
-  # CIRCUIT BREAKERS
-  # -------------------------------
+  # ================================
+  # CIRCUIT BREAKER
+  # ================================
   circuitbreaker:
-    instances:
 
-      user-service-cb:
+    configs:
+      default:
         registerHealthIndicator: true
+
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
+
         permittedNumberOfCallsInHalfOpenState: 3
+
         failureRateThreshold: 50
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 2s
+
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
+          - feign.FeignException
+          - feign.RetryableException
           - java.io.IOException
+          - java.net.ConnectException
           - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
           - org.springframework.web.client.HttpServerErrorException
           - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
           - com.jmd.common.exception.ClientRegistrationException
 
         ignoreExceptions:
+          - com.jmd.common.exception.BadRequestException
           - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
           - com.jmd.common.exception.ConflictException
-          - com.jmd.common.exception.AuthException
-          - com.jmd.common.exception.TokenException
-          - com.jmd.common.exception.RateLimitException
+          - com.jmd.common.exception.ValidateException
+          - com.jmd.authservice.exception.AuthException
+          - com.jmd.authservice.exception.TokenException
+          - com.jmd.authservice.exception.RateLimitException
 
-
+    instances:
+      user-service-cb:
+        baseConfig: default
       notification-service-cb:
-        registerHealthIndicator: true
-        slidingWindowType: COUNT_BASED
-        slidingWindowSize: 10
-        minimumNumberOfCalls: 5
-        permittedNumberOfCallsInHalfOpenState: 3
-        failureRateThreshold: 50
-        slowCallRateThreshold: 50
-        slowCallDurationThreshold: 2s
-        waitDurationInOpenState: 10s
-        automaticTransitionFromOpenToHalfOpenEnabled: true
+        baseConfig: default
 
-        recordExceptions:
+  # ================================
+  # RETRY
+  # ================================
+  retry:
+
+    configs:
+      default:
+        maxAttempts: 3
+        waitDuration: 2s
+
+        retryExceptions:
+          - feign.FeignException
+          - feign.RetryableException
           - java.io.IOException
+          - java.net.ConnectException
           - java.net.SocketTimeoutException
+          - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
           - org.springframework.web.client.HttpServerErrorException
+          - com.jmd.common.exception.ServiceException
+          - com.jmd.common.exception.ServiceUnavailableException
+          - com.jmd.common.exception.ClientNullException
 
         ignoreExceptions:
-          - com.jmd.common.exception.AuthException
-          - com.jmd.common.exception.TokenException
-          - com.jmd.common.exception.RateLimitException
+          - com.jmd.common.exception.BadRequestException
+          - com.jmd.common.exception.ResourceNotFoundException
+          - com.jmd.common.exception.AccessDeniedException
+          - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
+          - com.jmd.authservice.exception.AuthException
+          - com.jmd.authservice.exception.TokenException
+          - com.jmd.authservice.exception.RateLimitException
 
-
-  # -------------------------------
-  # RETRY CONFIGURATION
-  # -------------------------------
-  retry:
     instances:
-
       user-service-retry:
-        maxAttempts: 3
-        waitDuration: 2s   # DEV / LOCAL
-        retryExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
-          - org.springframework.web.client.ResourceAccessException
-
-        # PROD RECOMMENDED
-        # waitDuration: 5s
-        # maxAttempts: 3
-
-
+        baseConfig: default
       notification-service-retry:
-        maxAttempts: 3
-        waitDuration: 2s   # DEV / LOCAL
-        retryExceptions:
-          - java.io.IOException
-          - java.net.SocketTimeoutException
-          - org.springframework.web.client.ResourceAccessException
+        baseConfig: default
 
-        # PROD RECOMMENDED
-        # waitDuration: 5s
-        # maxAttempts: 3
-
-
-  # -------------------------------
+  # ================================
   # RATE LIMITER
-  # -------------------------------
+  # ================================
   ratelimiter:
+
+    configs:
+      default:
+        limitForPeriod: 10
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
     instances:
-
       user-service-rl:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 1s
-
+        baseConfig: default
       notification-service-rl:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 1s
+        baseConfig: default
