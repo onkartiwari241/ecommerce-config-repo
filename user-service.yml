@@ -32,6 +32,7 @@ eureka:
     fetch-registry: true
 
 # --- Distributed tracing, Zipkin, and Actuator ---
+# Distributed tracing and Zipkin
 management:
   tracing:
     enabled: true
@@ -40,6 +41,8 @@ management:
   zipkin:
     tracing:
       endpoint: http://localhost:9411/api/v2/spans
+
+  # Expose all actuator endpoints
   endpoints:
     web:
       exposure:
@@ -47,6 +50,20 @@ management:
   endpoint:
     health:
       show-details: always
+    circuitbreakers:
+      enabled: true
+    circuitbreakerevents:
+      enabled: true
+
+  health:
+    circuitbreakers:
+      enabled: true
+
+feign:
+  httpclient:
+    enabled: true
+  okhttp:
+    enabled: false
 
 #  --- LOGGING WITH TRACE ID + SPAN ID + ALL LEVELS ENABLED ---
 logging:
@@ -61,23 +78,28 @@ logging:
 # --- Resilience4J Configuration ---
 resilience4j:
 
+  # ================================
+  # CIRCUIT BREAKER
+  # ================================
   circuitbreaker:
-    instances:
-    
-      address-service-cb:
+
+    configs:
+      default:
         registerHealthIndicator: true
+
         slidingWindowType: COUNT_BASED
         slidingWindowSize: 10
         minimumNumberOfCalls: 5
+
         permittedNumberOfCallsInHalfOpenState: 3
-        
+
         failureRateThreshold: 50
         slowCallRateThreshold: 50
         slowCallDurationThreshold: 2s
-        
+
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
-        
+
         recordExceptions:
           - feign.FeignException
           - feign.RetryableException
@@ -86,32 +108,36 @@ resilience4j:
           - java.net.SocketTimeoutException
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
           - com.jmd.common.exception.ServiceException
           - com.jmd.common.exception.ServiceUnavailableException
           - com.jmd.common.exception.ClientNullException
-          
+
         ignoreExceptions:
           - com.jmd.common.exception.BadRequestException
           - com.jmd.common.exception.ResourceNotFoundException
           - com.jmd.common.exception.AccessDeniedException
           - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
 
-      media-service-cb:
-        baseConfig: address-service-cb
-
-      vendor-service-cb:
-        baseConfig: address-service-cb
-
- # -------------------------
- # RETRY
- # -------------------------
-  retry:
     instances:
-    
-      address-service-retry:
+      address-service-cb:
+        baseConfig: default
+      media-service-cb:
+        baseConfig: default
+      vendor-service-cb:
+        baseConfig: default
+
+  # ================================
+  # RETRY
+  # ================================
+  retry:
+
+    configs:
+      default:
         maxAttempts: 3
         waitDuration: 2s
-        
+
         retryExceptions:
           - feign.FeignException
           - feign.RetryableException
@@ -120,39 +146,41 @@ resilience4j:
           - java.net.SocketTimeoutException
           - java.util.concurrent.TimeoutException
           - org.springframework.web.client.ResourceAccessException
+          - org.springframework.web.client.HttpServerErrorException
           - com.jmd.common.exception.ServiceException
           - com.jmd.common.exception.ServiceUnavailableException
           - com.jmd.common.exception.ClientNullException
-          
+
         ignoreExceptions:
           - com.jmd.common.exception.BadRequestException
           - com.jmd.common.exception.ResourceNotFoundException
           - com.jmd.common.exception.AccessDeniedException
           - com.jmd.common.exception.ConflictException
+          - com.jmd.common.exception.ValidateException
 
-      media-service-retry:
-        baseConfig: address-service-retry
-
-      vendor-service-retry:
-        baseConfig: address-service-retry
-
-  # -------------------------
-  # RATE LIMITER
-  # -------------------------       
-  ratelimiter:
     instances:
-    
+      address-service-retry:
+        baseConfig: default
+      media-service-retry:
+        baseConfig: default
+      vendor-service-retry:
+        baseConfig: default
+
+  # ================================
+  # RATE LIMITER
+  # ================================
+  ratelimiter:
+
+    configs:
+      default:
+        limitForPeriod: 10
+        limitRefreshPeriod: 10s
+        timeoutDuration: 1s
+
+    instances:
       address-service-rl:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 1s
-
+        baseConfig: default
       media-service-rl:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 1s
-
+        baseConfig: default
       vendor-service-rl:
-        limitForPeriod: 5
-        limitRefreshPeriod: 10s
-        timeoutDuration: 1s
+        baseConfig: default
