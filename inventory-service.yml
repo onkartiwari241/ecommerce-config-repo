@@ -166,7 +166,7 @@ resilience4j:
 logging:
   level:
     com.jmd.inventory: DEBUG
-    feign.Logger: BASIC
+    feign.Logger: DEBUG
     org.springframework.cloud.openfeign: INFO
 
   pattern:
