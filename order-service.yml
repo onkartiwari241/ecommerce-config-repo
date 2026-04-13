@@ -198,7 +198,7 @@ feign:
 logging:
   level:
     com.jmd.order: DEBUG
-    feign.Logger: BASIC
+    feign.Logger: DEBUG
     org.springframework.cloud.openfeign: INFO
 
   pattern:
