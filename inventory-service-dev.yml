@@ -1,7 +1,8 @@
 # Database configuration
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/inventory_service
+    # url: jdbc:postgresql://localhost:5432/inventory_service
+    url: jdbc:postgresql://postgres:5432/inventory_service
     username: postgres
     password: onkar
     driver-class-name: org.postgresql.Driver
