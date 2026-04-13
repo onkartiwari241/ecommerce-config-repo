@@ -177,7 +177,7 @@ management:
 logging:
   level:
     com.jmd.payment: DEBUG
-    feign.Logger: BASIC
+    feign.Logger: DEBUG
     org.springframework.cloud.openfeign: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
