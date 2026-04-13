@@ -6,7 +6,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:9090/.well-known/jwks.json
+          # jwk-set-uri: http://localhost:9090/.well-known/jwks.json
+          jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
 
 # =========================
 # RAZORPAY CONFIG
@@ -25,7 +26,8 @@ server:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      # defaultZone: http://localhost:8761/eureka
+      defaultZone: http://service-registry:8761/eureka
     register-with-eureka: true
     fetch-registry: true
 
@@ -152,7 +154,8 @@ management:
 
   zipkin:
     tracing:
-      endpoint: http://localhost:9411/api/v2/spans
+      # endpoint: http://localhost:9411/api/v2/spans
+      endpoint: http://zipkin:9411/api/v2/spans
 
   endpoints:
     web:
