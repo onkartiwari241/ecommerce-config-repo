@@ -194,7 +194,7 @@ management:
 logging:
   level:
     com.jmd.cart: DEBUG
-    feign.Logger: BASIC
+    feign.Logger: DEBUG
     org.springframework.cloud.openfeign: INFO
 
   pattern:
