@@ -90,7 +90,7 @@ management:
 logging:
   level:
     com.jmd.authservice: DEBUG
-    feign.Logger: BASIC
+    feign.Logger: DEBUG
     org.springframework.cloud.openfeign: INFO
 
   pattern:
