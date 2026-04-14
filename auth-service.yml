@@ -1,7 +1,7 @@
-spring:
-  application:
-    name: auth-service
+server:
+  port: 9090
 
+spring:
   security:
     oauth2:
       client:
@@ -12,9 +12,6 @@ spring:
             scope:
               - email
               - profile
-
-server:
-  port: 9090
 
 # =====================================================
 # 🔹 EUREKA CONFIG
