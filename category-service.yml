@@ -1,7 +1,7 @@
+server:
+  port: 8082
+  
 spring:
-  application:
-    name: category-service
-    
   security:
     oauth2:
       resourceserver:
@@ -26,8 +26,6 @@ spring:
       cache-null-values: false
       key-prefix: "categoryService:"
       
-server:
-  port: 8082
 
 # Eureka configuration
 # eureka:
