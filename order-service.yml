@@ -1,7 +1,7 @@
-spring:
-  application:
-    name: 'order-service'
+server:
+  port: 8083
 
+spring:
   security:
     oauth2:
       resourceserver:
