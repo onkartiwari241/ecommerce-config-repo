@@ -13,6 +13,12 @@ spring:
     # host: localhost
     host: redis
     port: 6379
+
+  data:
+    redis:
+      repositories:
+        enabled: false
+        
   cache:
     type: redis
     redis:
