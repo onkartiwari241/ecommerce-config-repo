@@ -1,7 +1,8 @@
+server:
+  port: 8080
+  
+
 spring:
-  application:
-    name: user-service
-    
   security:
     oauth2:
       resourceserver:
@@ -26,9 +27,7 @@ spring:
       time-to-live: 600000        # 10 minutes
       cache-null-values: false
       key-prefix: "userService:"
-
-server:
-  port: 8080
+      
 
 # --- Eureka configuration ---
 # eureka:
