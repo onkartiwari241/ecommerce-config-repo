@@ -1,7 +1,7 @@
+server:
+  port: 9292
+  
 spring:
-  application:
-    name: payment-service
-
   security:
     oauth2:
       resourceserver:
@@ -16,9 +16,6 @@ razorpay:
   key: ${RAZORPAY_KEY}
   secret: ${RAZORPAY_SECRET}
   webhook-secret: ${RAZORPAY_WEBHOOK_SECRET}
-
-server:
-  port: 9292
 
 # =========================
 # EUREKA
