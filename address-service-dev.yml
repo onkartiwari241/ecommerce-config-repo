@@ -1,4 +1,21 @@
-# Database configuration
+# # Database configuration
+# spring:
+#   datasource:
+#     url: jdbc:postgresql://postgres:5432/address_service
+#     username: postgres
+#     password: onkar
+#     driver-class-name: org.postgresql.Driver
+
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate:
+#         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
+
 spring:
   datasource:
     url: jdbc:postgresql://postgres:5432/address_service
@@ -13,3 +30,14 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        max-attempts: 50
+        initial-interval: 3000
+        multiplier: 1.5
+        max-interval: 15000
+      request-read-timeout: 5000
+      request-connect-timeout: 5000
