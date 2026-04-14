@@ -23,13 +23,24 @@ server:
 # =========================
 # EUREKA
 # =========================
+# eureka:
+#   client:
+#     service-url:
+#       # defaultZone: http://localhost:8761/eureka
+#       defaultZone: http://service-registry:8761/eureka
+#     register-with-eureka: true
+#     fetch-registry: true
+
 eureka:
   client:
     service-url:
-      # defaultZone: http://localhost:8761/eureka
       defaultZone: http://service-registry:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 90
 
 # =========================
 # FEIGN (ORDER SERVICE)
