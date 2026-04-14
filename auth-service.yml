@@ -19,13 +19,25 @@ server:
 # =====================================================
 # 🔹 EUREKA CONFIG
 # =====================================================
+# eureka:
+#   client:
+#     register-with-eureka: true
+#     fetch-registry: true
+#     service-url:
+#       # defaultZone: http://localhost:8761/eureka
+#       defaultZone: http://service-registry:8761/eureka
+
 eureka:
   client:
+    service-url:
+      defaultZone: http://service-registry:8761/eureka
     register-with-eureka: true
     fetch-registry: true
-    service-url:
-      # defaultZone: http://localhost:8761/eureka
-      defaultZone: http://service-registry:8761/eureka
+
+  instance:
+    lease-renewal-interval-in-seconds: 10
+    lease-expiration-duration-in-seconds: 90
+
 
 # =====================================================
 # 🔹 JWT CONFIG (RSA + JWKS)
