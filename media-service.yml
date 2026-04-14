@@ -1,16 +1,13 @@
+server:
+  port: 8090
+  
 spring:
-  application:
-    name: media-service
-    
   security:
     oauth2:
       resourceserver:
         jwt:
           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
           # jwk-set-uri: http://localhost:9090/.well-known/jwks.json
-
-server:
-  port: 8090
 
 # --- Eureka configuration ---
 # eureka:
