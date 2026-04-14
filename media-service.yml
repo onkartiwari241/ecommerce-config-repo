@@ -53,7 +53,7 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    com.jmd.user: TRACE
+    com.jmd.mediaservice: TRACE
 
   pattern:
     level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
