@@ -1,8 +1,51 @@
-# Database configuration
+# # Database configuration
+# spring:
+#   datasource:
+#     # url: jdbc:mysql://localhost:3306/notification_service
+#     url: jdbc:mysql://mysql:3306/notification_service
+#     username: root
+#     password: onkar
+#     driver-class-name: com.mysql.cj.jdbc.Driver
+
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: true
+#     properties:
+#       hibernate:
+#         dialect: org.hibernate.dialect.MySQL8Dialect
+
+#   mail:
+#     host: smtp.gmail.com
+#     port: 587
+#     username: ${SMTP_USERNAME}
+#     password: ${SMTP_PASSWORD}
+#     properties:
+#       mail:
+#         smtp:
+#           auth: true
+#           starttls:
+#             enable: true
+
+# # Twilio configuration (secured using environment variables)
+# twilio:
+#   account-sid: ${TWILIO_ACCOUNT_SID}
+#   auth-token: ${TWILIO_AUTH_TOKEN}
+#   phone-number: ${TWILIO_PHONE_NUMBER}
+
+#   whatsapp:
+#     account-sid: ${TWILIO_WHATSAPP_ACCOUNT_SID}
+#     auth-token: ${TWILIO_WHATSAPP_AUTH_TOKEN}
+#     phone-number: ${TWILIO_WHATSAPP_PHONE_NUMBER}
+
+
+
+
+
+
 spring:
   datasource:
-    # url: jdbc:mysql://localhost:3306/notification_service
-    url: jdbc:mysql://mysql:3306/notification_service
+    url: jdbc:mysql://mysql:3306/notification_service   # 🔁 CHANGED (docker)
     username: root
     password: onkar
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -15,25 +58,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${SMTP_USERNAME}
-    password: ${SMTP_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-# Twilio configuration (secured using environment variables)
-twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID}
-  auth-token: ${TWILIO_AUTH_TOKEN}
-  phone-number: ${TWILIO_PHONE_NUMBER}
-
-  whatsapp:
-    account-sid: ${TWILIO_WHATSAPP_ACCOUNT_SID}
-    auth-token: ${TWILIO_WHATSAPP_AUTH_TOKEN}
-    phone-number: ${TWILIO_WHATSAPP_PHONE_NUMBER}
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        max-attempts: 50
+        initial-interval: 3000
+        multiplier: 1.5
+        max-interval: 15000
+      request-read-timeout: 5000
+      request-connect-timeout: 5000
