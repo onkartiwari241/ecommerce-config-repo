@@ -1,7 +1,8 @@
+server:
+  port: 8081
+  
+
 spring:
-  application:
-    name: product-service
-    
   security:
     oauth2:
       resourceserver:
@@ -34,9 +35,7 @@ spring:
         enabled: true
       circuitbreaker:
         enabled: true
-
-server:
-  port: 8081
+        
 
 # Eureka Configuration
 # eureka:
