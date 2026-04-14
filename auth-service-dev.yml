@@ -7,7 +7,7 @@ spring:
   # ===============================
   datasource:
     # url: jdbc:postgresql://localhost:5432/authservice
-    url: jdbc:postgresql://postgres:5432/authservice
+    url: jdbc:postgresql://postgres:5432/auth_service
     username: postgres
     password: onkar
     driver-class-name: org.postgresql.Driver
