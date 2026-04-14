@@ -1,7 +1,8 @@
+server:
+  port: 9091
+  
+  
 spring:
-  application:
-    name: vendor-service
-
   security:
     oauth2:
       resourceserver:
@@ -25,9 +26,6 @@ spring:
       cache-null-values: false
       key-prefix: "vendorService:"
 
-
-server:
-  port: 9091
 
 # --- Eureka configuration ---
 # eureka:
