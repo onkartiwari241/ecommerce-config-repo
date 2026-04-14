@@ -28,9 +28,6 @@ spring:
       cache-null-values: false
       key-prefix: 'orderService:'
 
-server:
-  port: 8083
-
 # Eureka configuration
 # eureka:
 #   client:
