@@ -1,25 +1,25 @@
-# server:
-#   port: 8087
+server:
+  port: 8087
 
   
-# spring:
-#   security:
-#     oauth2:
-#       resourceserver:
-#         jwt:
-#           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-#           # jwk-set-uri: http://localhost:9090/.well-known/jwks.json
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
+          jwk-set-uri: http://localhost:9090/.well-known/jwks.json
           
 
-# # Eureka configuration
-# # eureka:
-# #   client:
-# #     service-url:
-# #       # defaultZone: http://localhost:8761/eureka
-# #       defaultZone: http://service-registry:8761/eureka
+# Eureka configuration
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+      # defaultZone: http://service-registry:8761/eureka
       
-# #     register-with-eureka: true
-# #     fetch-registry: true
+    register-with-eureka: true
+    fetch-registry: true
 
 
 # eureka:
@@ -33,113 +33,113 @@
 #     lease-renewal-interval-in-seconds: 10
 #     lease-expiration-duration-in-seconds: 90
 
-# # Distributed tracing and Zipkin
-# management:
-#   tracing:
-#     enabled: true
-#     sampling:
-#       probability: 1.0
-#   zipkin:
-#     tracing:
-#       # endpoint: http://localhost:9411/api/v2/spans
-#       endpoint: http://zipkin:9411/api/v2/spans
-#   endpoints:
-#     web:
-#       exposure:
-#         include: '*'
-#   endpoint:
-#     health:
-#       show-details: always
-
-# logging:
-#   pattern:
-#     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
-
-
-
-
-
-
-
-
-
-
-
-server:
-  port: 8087
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${SMTP_USERNAME}
-    password: ${SMTP_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-# =========================
-# TWILIO
-# =========================
-twilio:
-  account-sid: ${TWILIO_ACCOUNT_SID}
-  auth-token: ${TWILIO_AUTH_TOKEN}
-  phone-number: ${TWILIO_PHONE_NUMBER}
-
-  whatsapp:
-    account-sid: ${TWILIO_WHATSAPP_ACCOUNT_SID}
-    auth-token: ${TWILIO_WHATSAPP_AUTH_TOKEN}
-    phone-number: ${TWILIO_WHATSAPP_PHONE_NUMBER}
-
-# =========================
-# EUREKA
-# =========================
-eureka:
-  client:
-    service-url:
-      defaultZone: http://service-registry:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-
-  instance:
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 90
-
-# =========================
-# MANAGEMENT + TRACING
-# =========================
+# Distributed tracing and Zipkin
 management:
   tracing:
     enabled: true
     sampling:
       probability: 1.0
-
   zipkin:
     tracing:
-      endpoint: http://zipkin:9411/api/v2/spans
-
+      endpoint: http://localhost:9411/api/v2/spans
+      # endpoint: http://zipkin:9411/api/v2/spans
   endpoints:
     web:
       exposure:
         include: '*'
-
   endpoint:
     health:
       show-details: always
 
-# =========================
-# LOGGING
-# =========================
 logging:
   pattern:
     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+
+
+
+
+
+
+
+
+
+
+
+# server:
+#   port: 8087
+
+# spring:
+#   security:
+#     oauth2:
+#       resourceserver:
+#         jwt:
+#           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
+
+#   mail:
+#     host: smtp.gmail.com
+#     port: 587
+#     username: ${SMTP_USERNAME}
+#     password: ${SMTP_PASSWORD}
+#     properties:
+#       mail:
+#         smtp:
+#           auth: true
+#           starttls:
+#             enable: true
+
+# # =========================
+# # TWILIO
+# # =========================
+# twilio:
+#   account-sid: ${TWILIO_ACCOUNT_SID}
+#   auth-token: ${TWILIO_AUTH_TOKEN}
+#   phone-number: ${TWILIO_PHONE_NUMBER}
+
+#   whatsapp:
+#     account-sid: ${TWILIO_WHATSAPP_ACCOUNT_SID}
+#     auth-token: ${TWILIO_WHATSAPP_AUTH_TOKEN}
+#     phone-number: ${TWILIO_WHATSAPP_PHONE_NUMBER}
+
+# # =========================
+# # EUREKA
+# # =========================
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://service-registry:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true
+
+#   instance:
+#     prefer-ip-address: true
+#     lease-renewal-interval-in-seconds: 10
+#     lease-expiration-duration-in-seconds: 90
+
+# # =========================
+# # MANAGEMENT + TRACING
+# # =========================
+# management:
+#   tracing:
+#     enabled: true
+#     sampling:
+#       probability: 1.0
+
+#   zipkin:
+#     tracing:
+#       endpoint: http://zipkin:9411/api/v2/spans
+
+#   endpoints:
+#     web:
+#       exposure:
+#         include: '*'
+
+#   endpoint:
+#     health:
+#       show-details: always
+
+# # =========================
+# # LOGGING
+# # =========================
+# logging:
+#   pattern:
+#     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
