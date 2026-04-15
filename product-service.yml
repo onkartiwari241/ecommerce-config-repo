@@ -7,12 +7,12 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-          # jwk-set-uri: http://localhost:9090/.well-known/jwks.json
+          # jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
+          jwk-set-uri: http://localhost:9090/.well-known/jwks.json
 
   redis:
-    # host: localhost
-    host: redis
+    host: localhost
+    # host: redis
     port: 6379
 
   data:
@@ -38,25 +38,25 @@ spring:
         
 
 # Eureka Configuration
-# eureka:
-#   client:
-#     service-url:
-#       # defaultZone: http://localhost:8761/eureka
-#       defaultZone: http://service-registry:8761/eureka
-#     register-with-eureka: true
-#     fetch-registry: true
-
 eureka:
   client:
     service-url:
-      defaultZone: http://service-registry:8761/eureka/
+      defaultZone: http://localhost:8761/eureka
+      # defaultZone: http://service-registry:8761/eureka
     register-with-eureka: true
     fetch-registry: true
 
-  instance:
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 90
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://service-registry:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true
+
+#   instance:
+#     prefer-ip-address: true
+#     lease-renewal-interval-in-seconds: 10
+#     lease-expiration-duration-in-seconds: 90
     
 
 # Distributed Tracing + Zipkin + Actuator
@@ -68,8 +68,8 @@ management:
 
   zipkin:
     tracing:
-      # endpoint: http://localhost:9411/api/v2/spans
-      endpoint: http://zipkin:9411/api/v2/spans
+      endpoint: http://localhost:9411/api/v2/spans
+      # endpoint: http://zipkin:9411/api/v2/spans
 
   endpoints:
     web:
