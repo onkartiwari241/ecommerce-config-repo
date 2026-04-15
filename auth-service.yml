@@ -16,25 +16,25 @@ spring:
 # =====================================================
 # 🔹 EUREKA CONFIG
 # =====================================================
-# eureka:
-#   client:
-#     register-with-eureka: true
-#     fetch-registry: true
-#     service-url:
-#       # defaultZone: http://localhost:8761/eureka
-#       defaultZone: http://service-registry:8761/eureka
-
 eureka:
   client:
-    service-url:
-      defaultZone: http://service-registry:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+      # defaultZone: http://service-registry:8761/eureka
 
-  instance:
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 90
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://service-registry:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true
+
+#   instance:
+#     prefer-ip-address: true
+#     lease-renewal-interval-in-seconds: 10
+#     lease-expiration-duration-in-seconds: 90
 
 
 # =====================================================
@@ -76,8 +76,8 @@ management:
 
   zipkin:
     tracing:
-      # endpoint: http://localhost:9411/api/v2/spans
-      endpoint: http://zipkin:9411/api/v2/spans
+      endpoint: http://localhost:9411/api/v2/spans
+      # endpoint: http://zipkin:9411/api/v2/spans
 
   endpoints:
     web:
