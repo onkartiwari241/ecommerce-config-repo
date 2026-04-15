@@ -1,26 +1,26 @@
-# spring:
-#   application:
-#     name: api-gateway
+spring:
+  application:
+    name: api-gateway
 
-#   security:
-#     oauth2:
-#       resourceserver:
-#         jwt:
-#           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-#           # jwk-set-uri: http://localhost:9090/.well-known/jwks.json
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
+          jwk-set-uri: http://localhost:9090/.well-known/jwks.json
 
 
-# server:
-#   port: 8085
+server:
+  port: 8085
 
-# # Eureka client common setup
-# # eureka:
-# #   client:
-# #     register-with-eureka: true
-# #     fetch-registry: true
-# #     service-url:
-# #       # defaultZone: http://localhost:8761/eureka
-# #       defaultZone: http://service-registry:8761/eureka
+# Eureka client common setup
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+      # defaultZone: http://service-registry:8761/eureka
 
 # eureka:
 #   client:
@@ -33,7 +33,77 @@
 #     lease-renewal-interval-in-seconds: 10
 #     lease-expiration-duration-in-seconds: 90
 
-# # Distributed tracing, Zipkin & Actuator
+# Distributed tracing, Zipkin & Actuator
+management:
+  tracing:
+    enabled: true
+    sampling:
+      probability: 1.0
+
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+      # endpoint: http://zipkin:9411/api/v2/spans
+
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always
+
+    # 🚀 REQUIRED FOR SPRING CLOUD GATEWAY actuator
+    gateway:
+      enabled: true
+
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# server:
+#   port: 8085
+
+# spring:
+#   security:
+#     oauth2:
+#       resourceserver:
+#         jwt:
+#           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
+
+# # Eureka
+# eureka:
+#   client:
+#     service-url:
+#       defaultZone: http://service-registry:8761/eureka/
+#     register-with-eureka: true
+#     fetch-registry: true
+
+#   instance:
+#     prefer-ip-address: true
+#     lease-renewal-interval-in-seconds: 10
+#     lease-expiration-duration-in-seconds: 90
+
+# # Management & Tracing
 # management:
 #   tracing:
 #     enabled: true
@@ -42,7 +112,6 @@
 
 #   zipkin:
 #     tracing:
-#       # endpoint: http://localhost:9411/api/v2/spans
 #       endpoint: http://zipkin:9411/api/v2/spans
 
 #   endpoints:
@@ -53,79 +122,10 @@
 #   endpoint:
 #     health:
 #       show-details: always
-
-#     # 🚀 REQUIRED FOR SPRING CLOUD GATEWAY actuator
 #     gateway:
 #       enabled: true
 
+# # Logging
 # logging:
 #   pattern:
 #     level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-server:
-  port: 8085
-
-spring:
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-
-# Eureka
-eureka:
-  client:
-    service-url:
-      defaultZone: http://service-registry:8761/eureka/
-    register-with-eureka: true
-    fetch-registry: true
-
-  instance:
-    prefer-ip-address: true
-    lease-renewal-interval-in-seconds: 10
-    lease-expiration-duration-in-seconds: 90
-
-# Management & Tracing
-management:
-  tracing:
-    enabled: true
-    sampling:
-      probability: 1.0
-
-  zipkin:
-    tracing:
-      endpoint: http://zipkin:9411/api/v2/spans
-
-  endpoints:
-    web:
-      exposure:
-        include: "*"
-
-  endpoint:
-    health:
-      show-details: always
-    gateway:
-      enabled: true
-
-# Logging
-logging:
-  pattern:
-    level: "%5p [${spring.application.name:}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
