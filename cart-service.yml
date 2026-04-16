@@ -22,7 +22,7 @@ spring:
   cache:
     type: redis
     redis:
-      time-to-live: 600000
+      time-to-live: 7200000   # 2 hours
       cache-null-values: false
       key-prefix: "cartService:"
 
