@@ -227,5 +227,9 @@ logging:
     feign.Logger: DEBUG
     org.springframework.cloud.openfeign: INFO
 
+# logging:
   pattern:
-    level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
+    level: "%5p [${spring.application.name}, correlationId=%X{correlationId:-}]"
+
+  # pattern:
+  #   level: "%5p [${spring.application.name}, traceId=%X{traceId:-}, spanId=%X{spanId:-}]"
