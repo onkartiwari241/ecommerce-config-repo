@@ -49,7 +49,7 @@
 
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5433/auth_service
+    url: jdbc:postgresql://postgres:5432/auth_service
     username: postgres
     password: onkar
     driver-class-name: org.postgresql.Driver
