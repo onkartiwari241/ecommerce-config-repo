@@ -1,0 +1,159 @@
+# spring:
+#   cloud:
+#     gateway:
+#       routes:
+#         - id: user-service
+#           uri: lb://USER-SERVICE
+#           predicates:
+#             - Path=/api/v1/users/**
+
+#         - id: product-service
+#           uri: lb://PRODUCT-SERVICE
+#           predicates:
+#             - Path=/api/v1/products/**
+
+#         - id: order-service
+#           uri: lb://ORDER-SERVICE
+#           predicates:
+#             - Path=/api/v1/orders/**
+
+#         - id: notification-service
+#           uri: lb://NOTIFICATION-SERVICE
+#           predicates:
+#             - Path=/api/v1/notifications/**
+
+#         - id: inventory-service
+#           uri: lb://INVENTORY-SERVICE
+#           predicates:
+#             - Path=/api/v1/inventory/**
+
+#         - id: category-service
+#           uri: lb://CATEGORY-SERVICE
+#           predicates:
+#             - Path=/api/v1/categories/**
+
+#         - id: address-service
+#           uri: lb://ADDRESS-SERVICE
+#           predicates:
+#             - Path=/api/v1/address/**
+
+#         - id: auth-service
+#           uri: lb://AUTH-SERVICE
+#           predicates:
+#             - Path=/auth/**
+#           # filters:
+#           #   - StripPrefix=1
+
+
+#         - id: vendor-service
+#           uri: lb://VENDOR-SERVICE
+#           predicates:
+#             - Path=/api/v1/vendors/**
+
+#         - id: cart-service
+#           uri: lb://CART-SERVICE
+#           predicates:
+#             - Path=/api/v1/cart/**
+
+#         - id: payment-service
+#           uri: lb://PAYMENT-SERVICE
+#           predicates:
+#             - Path=/api/v1/payments/**
+
+#         - id: payment-webhook
+#           uri: lb://PAYMENT-SERVICE
+#           predicates:
+#             - Path=/api/v1/webhooks/**
+
+
+
+
+
+
+
+
+
+spring:
+  cloud:
+    config:
+      fail-fast: true
+      retry:
+        max-attempts: 50
+        initial-interval: 3000
+        multiplier: 1.5
+        max-interval: 15000
+      request-read-timeout: 5000
+      request-connect-timeout: 5000
+
+    gateway:
+      routes:
+
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/api/v1/users/**
+
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/api/v1/products/**
+
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/orders/**
+
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notifications/**
+
+        - id: inventory-service
+          uri: lb://INVENTORY-SERVICE
+          predicates:
+            - Path=/api/v1/inventory/**
+
+        - id: category-service
+          uri: lb://CATEGORY-SERVICE
+          predicates:
+            - Path=/api/v1/categories/**
+
+        - id: address-service
+          uri: lb://ADDRESS-SERVICE
+          predicates:
+            - Path=/api/v1/address/**
+
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: vendor-service
+          uri: lb://VENDOR-SERVICE
+          predicates:
+            - Path=/api/v1/vendors/**
+
+        - id: cart-service
+          uri: lb://CART-SERVICE
+          predicates:
+            - Path=/api/v1/cart/**
+
+        - id: payment-service
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/payments/**
+
+        - id: payment-webhook
+          uri: lb://PAYMENT-SERVICE
+          predicates:
+            - Path=/api/v1/webhooks/**
+
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVERS}
+
+# Debug logs only for dev
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty.http.server: DEBUG
