@@ -100,6 +100,7 @@
 server:
   port: 8084
 
+
 spring:
   security:
     oauth2:
@@ -107,12 +108,10 @@ spring:
         jwt:
           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
 
-  redis:
-    host: redis
-    port: 6379
-
   data:
     redis:
+      host: redis
+      port: 6379
       repositories:
         enabled: false
 
@@ -122,6 +121,31 @@ spring:
       time-to-live: 600000
       cache-null-values: false
       key-prefix: "addressService:"
+
+      
+
+# spring:
+#   security:
+#     oauth2:
+#       resourceserver:
+#         jwt:
+#           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
+
+#   redis:
+#     host: redis
+#     port: 6379
+
+#   data:
+#     redis:
+#       repositories:
+#         enabled: false
+
+#   cache:
+#     type: redis
+#     redis:
+#       time-to-live: 600000
+#       cache-null-values: false
+#       key-prefix: "addressService:"
 
 # Eureka
 eureka:
