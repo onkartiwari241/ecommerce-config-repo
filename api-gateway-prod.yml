@@ -128,6 +128,11 @@ spring:
           predicates:
             - Path=/auth/**
 
+        - id: auth-service-oauth
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/oauth2/**,/login/**
+
         - id: vendor-service
           uri: lb://VENDOR-SERVICE
           predicates:
