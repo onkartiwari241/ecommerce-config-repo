@@ -1,5 +1,6 @@
 server:
   port: 9090
+  forward-headers-strategy: framework
 
 spring:
   security:
@@ -12,6 +13,7 @@ spring:
             scope:
               - email
               - profile
+            redirect-uri: "https://ayodhyamartstore.in/login/oauth2/code/google"
 
 # =====================================================
 # 🔹 EUREKA CONFIG
