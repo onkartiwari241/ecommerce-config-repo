@@ -17,6 +17,11 @@ spring:
           predicates:
             - Path=/api/v1/orders/**
 
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/admin/**
+
         - id: notification-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
