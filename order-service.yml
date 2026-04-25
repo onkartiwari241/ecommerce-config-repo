@@ -38,7 +38,8 @@ eureka:
     fetch-registry: true
 
   instance:
-    prefer-ip-address: true
+    hostname: localhost
+    # prefer-ip-address: true
 
 
 # eureka:
