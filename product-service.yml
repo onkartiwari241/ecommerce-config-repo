@@ -27,7 +27,7 @@ spring:
       discovery:
         enabled: true
       circuitbreaker:
-        enabled: true
+        enabled: false
 
 eureka:
   client:
