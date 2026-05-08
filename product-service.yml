@@ -1,8 +1,8 @@
 server:
   port: 8081
-  
 
 spring:
+
   security:
     oauth2:
       resourceserver:
@@ -19,50 +19,73 @@ spring:
     redis:
       repositories:
         enabled: false
-        
+
   cache:
     type: redis
     redis:
-      time-to-live: 600000        # 10 minutes
+      time-to-live: 600000
       cache-null-values: false
       key-prefix: "productService:"
 
-
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 25MB
 
   cloud:
+
     openfeign:
+
       discovery:
         enabled: true
+
       circuitbreaker:
         enabled: true
-        
 
-# Eureka Configuration
+      httpclient:
+        enabled: true
+
+      okhttp:
+        enabled: false
+
+      client:
+        config:
+
+          default:
+            connectTimeout: 10000
+            readTimeout: 30000
+            loggerLevel: FULL
+
+          MEDIA-SERVICE:
+            connectTimeout: 10000
+            readTimeout: 60000
+            loggerLevel: FULL
+
+          INVENTORY-SERVICE:
+            connectTimeout: 10000
+            readTimeout: 30000
+            loggerLevel: FULL
+
+# =========================================
+# EUREKA CONFIGURATION
+# =========================================
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
       # defaultZone: http://service-registry:8761/eureka
+
     register-with-eureka: true
     fetch-registry: true
 
-# eureka:
-#   client:
-#     service-url:
-#       defaultZone: http://service-registry:8761/eureka/
-#     register-with-eureka: true
-#     fetch-registry: true
-
-#   instance:
-#     prefer-ip-address: true
-#     lease-renewal-interval-in-seconds: 10
-#     lease-expiration-duration-in-seconds: 90
-    
-
-# Distributed Tracing + Zipkin + Actuator
+# =========================================
+# MANAGEMENT + ZIPKIN + ACTUATOR
+# =========================================
 management:
+
   tracing:
     enabled: true
+
     sampling:
       probability: 1.0
 
@@ -77,10 +100,13 @@ management:
         include: '*'
 
   endpoint:
+
     health:
       show-details: always
+
     circuitbreakers:
       enabled: true
+
     circuitbreakerevents:
       enabled: true
 
@@ -88,30 +114,20 @@ management:
     circuitbreakers:
       enabled: true
 
-# Feign Configuration
-feign:
-  httpclient:
-    enabled: true
-  okhttp:
-    enabled: false
-  client:
-    config:
-      INVENTORY-SERVICE:
-        connectTimeout: 10000
-        readTimeout: 30000
-
-# -------------------------------
+# =========================================
 # RESILIENCE4J
-# -------------------------------
+# =========================================
 resilience4j:
 
-  # ================================
+  # =======================================
   # CIRCUIT BREAKER
-  # ================================
+  # =======================================
   circuitbreaker:
 
     configs:
+
       default:
+
         registerHealthIndicator: true
 
         slidingWindowType: COUNT_BASED
@@ -121,10 +137,14 @@ resilience4j:
         permittedNumberOfCallsInHalfOpenState: 3
 
         failureRateThreshold: 50
+
         slowCallRateThreshold: 50
-        slowCallDurationThreshold: 2s
+
+        # Increased because Cloudinary upload takes time
+        slowCallDurationThreshold: 10s
 
         waitDurationInOpenState: 10s
+
         automaticTransitionFromOpenToHalfOpenEnabled: true
 
         recordExceptions:
@@ -148,22 +168,43 @@ resilience4j:
           - com.jmd.common.exception.ValidateException
 
     instances:
+
       address-service-cb:
         baseConfig: default
+
       inventory-service-cb:
         baseConfig: default
+
       media-service-cb:
         baseConfig: default
+
       category-service-cb:
         baseConfig: default
 
-  # ================================
+  # =======================================
+  # TIME LIMITER
+  # =======================================
+  timelimiter:
+
+    configs:
+
+      default:
+        timeoutDuration: 60s
+
+    instances:
+
+      media-service-cb:
+        baseConfig: default
+
+  # =======================================
   # RETRY
-  # ================================
+  # =======================================
   retry:
 
     configs:
+
       default:
+
         maxAttempts: 3
         waitDuration: 2s
 
@@ -188,40 +229,50 @@ resilience4j:
           - com.jmd.common.exception.ValidateException
 
     instances:
+
       address-service-retry:
         baseConfig: default
+
       inventory-service-retry:
         baseConfig: default
+
       media-service-retry:
         baseConfig: default
+
       category-service-retry:
         baseConfig: default
 
-  # ================================
+  # =======================================
   # RATE LIMITER
-  # ================================
+  # =======================================
   ratelimiter:
 
     configs:
+
       default:
         limitForPeriod: 10
         limitRefreshPeriod: 10s
         timeoutDuration: 1s
 
     instances:
+
       address-service-rl:
         baseConfig: default
+
       inventory-service-rl:
         baseConfig: default
+
       media-service-rl:
         baseConfig: default
+
       category-service-rl:
         baseConfig: default
 
-# -------------------------------
+# =========================================
 # LOGGING
-# -------------------------------
+# =========================================
 logging:
+
   level:
     com.jmd.product: DEBUG
     feign.Logger: DEBUG
