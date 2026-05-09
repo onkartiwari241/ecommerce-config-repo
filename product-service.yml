@@ -21,13 +21,46 @@ spring:
       time-to-live: 600000
       cache-null-values: false
       key-prefix: "productService:"
-  
+
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 25MB
+
+
   cloud:
+
     openfeign:
+
       discovery:
         enabled: true
+
       circuitbreaker:
+        enabled: true
+
+      httpclient:
+        enabled: true
+
+      okhttp:
         enabled: false
+
+      client:
+        config:
+
+          default:
+            connectTimeout: 10000
+            readTimeout: 30000
+            loggerLevel: FULL
+
+          MEDIA-SERVICE:
+            connectTimeout: 10000
+            readTimeout: 60000
+            loggerLevel: FULL
+
+          INVENTORY-SERVICE:
+            connectTimeout: 10000
+            readTimeout: 30000
+            loggerLevel: FULL
 
 eureka:
   client:
@@ -70,21 +103,6 @@ management:
     circuitbreakers:
       enabled: true
 
-# Feign Configuration
-feign:
-  httpclient:
-    enabled: true
-  okhttp:
-    enabled: false
-  client:
-    config:
-      INVENTORY-SERVICE:
-        connectTimeout: 10000
-        readTimeout: 30000
-      MEDIA-SERVICE:
-        connectTimeout: 10000
-        readTimeout: 10000
-
 # -------------------------------
 # RESILIENCE4J
 # -------------------------------
@@ -107,7 +125,7 @@ resilience4j:
 
         failureRateThreshold: 50
         slowCallRateThreshold: 50
-        slowCallDurationThreshold: 5s
+        slowCallDurationThreshold: 10s
 
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
@@ -143,15 +161,25 @@ resilience4j:
         baseConfig: default
 
   timelimiter:
+
+    configs:
+
+      default:
+        timeoutDuration: 30s
+
     instances:
+
       media-service-cb:
-        timeoutDuration: 6s
+        baseConfig: default
+
       address-service-cb:
-        timeoutDuration: 3s
+        timeoutDuration: 5s
+
       category-service-cb:
-        timeoutDuration: 3s
+        timeoutDuration: 5s
+
       inventory-service-cb:
-        timeoutDuration: 3s
+        timeoutDuration: 5s
 
   # ================================
   # RETRY
