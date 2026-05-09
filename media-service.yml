@@ -7,18 +7,12 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: http://auth-service:9090/.well-known/jwks.json
-          # jwk-set-uri: http://localhost:9090/.well-known/jwks.json
 
-# --- Eureka configuration ---
-# eureka:
-#   client:
-#     service-url:
-#       # defaultZone: http://localhost:8761/eureka
-#       defaultZone: http://service-registry:8761/eureka
-#     register-with-eureka: true
-#     fetch-registry: true
-
-
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 25MB
+      
 eureka:
   client:
     service-url:
@@ -71,7 +65,7 @@ resilience4j:
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
         slowCallRateThreshold: 50
-        slowCallDurationThreshold: 2s
+        slowCallDurationThreshold: 10s
         waitDurationInOpenState: 10s
         automaticTransitionFromOpenToHalfOpenEnabled: true
         # recordExceptions:
