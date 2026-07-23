@@ -117,6 +117,21 @@ spring:
           predicates:
             - Path=/api/v1/admin/**
 
+        # Delivery-boy self-service assignment endpoints (DeliveryAssignmentController) - had
+        # no route at all, so /api/v1/delivery/assignments/offered|history 404'd at the gateway
+        # even though order-service correctly maps them.
+        - id: order-service-delivery
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/delivery/**
+
+        # Vendor order-fulfillment endpoints (VendorOrderFulfillmentController: accept/reject/
+        # ready-for-pickup) - same missing-route bug as order-service-delivery above.
+        - id: order-service-vendor-orders
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/api/v1/vendor/orders/**
+
         - id: notification-service
           uri: lb://NOTIFICATION-SERVICE
           predicates:
