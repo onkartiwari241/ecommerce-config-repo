@@ -2,10 +2,16 @@ spring:
   cloud:
     gateway:
       routes:
+        # Path=/api/v1/users/** alone does not match the bare /api/v1/users path (no
+        # trailing segment) - same missing-route class of bug already fixed below for
+        # product-service-v2/inventory-service-v2/order-service-delivery/
+        # order-service-vendor-orders. This route specifically needs the bare form too,
+        # for the admin "list all users" endpoint (GET /api/v1/users?pageNumber=...),
+        # which has no path segment after /users.
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Path=/api/v1/users/**
+            - Path=/api/v1/users,/api/v1/users/**
 
         - id: product-service
           uri: lb://PRODUCT-SERVICE
